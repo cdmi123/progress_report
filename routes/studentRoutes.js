@@ -40,7 +40,8 @@ router.get('/admin/student/add', async (req, res) => {
   const courses = await Course.find();
   res.render('admin/addStudent', {
     layout: 'admin/layout',
-    courses
+    courses,
+    success: '✅ Student added successfully!'
   });
 });
 
@@ -88,13 +89,37 @@ router.get('/admin/student/delete/:id', isAdmin, async (req, res) => {
 
 
 router.get('/admin/students', isAdmin, async (req, res) => {
-  const filter = {};
-  if (req.query.course) filter.course = req.query.course;
+  try {
+    const students = await Student.find().populate('courses');
 
-  const students = await Student.find(filter).populate('courses');
-  const courses = await Course.find();
+    for (const student of students) {
+      student.courseProgress = [];
 
-  res.render('admin/studentList', { students, courses, selectedCourse: req.query.course || '' });
+      for (const course of student.courses) {
+        const report = await Report.findOne({ student: student._id, course: course._id });
+        let completed = 0;
+
+        if (report && Array.isArray(report.topics)) {
+          completed = report.topics.filter(t => t.isChecked).length;
+        }
+
+        const total = course.topics.length;
+        const percent = total > 0 ? (completed / total) * 100 : 0;
+
+        student.courseProgress.push({
+          courseId: course._id.toString(),
+          courseName: course.name,
+          percent: Math.round(percent)
+        });
+      }
+    }
+
+    res.render('admin/studentList', { students });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error loading student list');
+  }
+
 });
 
 function isStudentLoggedIn(req, res, next) {

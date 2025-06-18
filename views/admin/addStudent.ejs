@@ -1,55 +1,44 @@
-
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="fw-bold text-primary">➕ Add New Student</h2>
-  <a href="/admin/dashboard" class="btn btn-outline-dark">
-    <i class="bi bi-speedometer2"></i> Back to Dashboard
+  <h2 class="fw-bold text-primary">
+    <i class="bi bi-person-plus-fill"></i> Add New Student
+  </h2>
+  <a href="/admin/students" class="btn btn-outline-dark">
+    <i class="bi bi-arrow-left"></i> Back to Student List
   </a>
 </div>
 
 <div class="card shadow-sm">
-  <div class="card-body">
+  <div class="card-body px-4 py-3">
     <form method="POST" action="/admin/student/add">
-      <div class="row mb-3">
-        <div class="col-md-4">
-          <label class="form-label">Name</label>
-          <input name="name" class="form-control"  required />
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Full Name</label>
+          <input name="name" class="form-control" placeholder="Enter full name" required />
         </div>
-        <div class="col-md-4">
-          <label class="form-label">Contact</label>
-          <input name="contact" class="form-control"  required />
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">Password</label>
-          <input name="password" class="form-control"  required />
+        <div class="col-md-6">
+          <label class="form-label">Phone Number</label>
+          <input name="contact" class="form-control" required pattern="^[0-9]{10}$"
+       title="Enter a 10-digit mobile number" />
         </div>
       </div>
 
-      <div class="row mb-3">
+      <div class="row g-3 mb-3">
         <div class="col-md-4">
           <label class="form-label">Reg No</label>
-          <input name="regNo" class="form-control" required />
+          <input name="regNo" class="form-control" placeholder="Registration Number" required />
         </div>
         <div class="col-md-4">
           <label class="form-label">Faculty Name</label>
-          <input name="facultyName" class="form-control" required />
+          <input name="facultyName" class="form-control" placeholder="Faculty name" required />
         </div>
         <div class="col-md-4">
-          <label class="form-label">Courses</label>
-<select name="courses" class="form-select" multiple required>
-  <% courses.forEach(course => { %>
-    <option value="<%= course._id %>"><%= course.name %></option>
-  <% }); %>
-</select>
-<small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple courses</small>
-
+          <label class="form-label">Password</label>
+          <input type="password" name="password" id="password" class="form-control" required />
+          <small id="passwordStrength" class="text-muted">Must be 6+ characters</small>
         </div>
-
-        <div class="row mb-3">
-
-</div>
       </div>
 
-      <div class="row mb-3">
+      <div class="row g-3 mb-3">
         <div class="col-md-6">
           <label class="form-label">Start Date</label>
           <input type="date" name="startDate" class="form-control" required />
@@ -60,8 +49,52 @@
         </div>
       </div>
 
-      <button class="btn btn-primary"><i class="bi bi-person-plus-fill"></i> Add Student</button>
-      <a href="/admin/students" class="btn btn-outline-secondary">View Students</a>
+      <div class="mb-4">
+        <label class="form-label">Courses</label>
+        <select name="courses" class="form-select" multiple required>
+          <% courses.forEach(course => { %>
+            <option value="<%= course._id %>"><%= course.name %></option>
+          <% }) %>
+        </select>
+        <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple courses</small>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-primary">
+          <i class="bi bi-save"></i> Save Student
+        </button>
+        <a href="/admin/students" class="btn btn-secondary">
+          <i class="bi bi-eye"></i> View All Students
+        </a>
+      </div>
     </form>
   </div>
 </div>
+
+<script>
+
+const passwordInput = document.getElementById('password');
+  const strengthText = document.getElementById('passwordStrength');
+
+  passwordInput.addEventListener('input', () => {
+    const value = passwordInput.value;
+    if (value.length < 6) {
+      strengthText.innerText = "❌ Too short";
+      strengthText.className = "text-danger";
+    } else if (value.match(/[A-Z]/) && value.match(/[0-9]/)) {
+      strengthText.innerText = "✅ Strong";
+      strengthText.className = "text-success";
+    } else {
+      strengthText.innerText = "⚠️ Add a number and uppercase letter";
+      strengthText.className = "text-warning";
+    }
+  });
+
+  if(typeof success !== 'undefined') {
+    const toast = document.createElement('div');
+    toast.className = 'toast position-fixed bottom-0 end-0 m-3 show bg-success text-white';
+    toast.innerHTML = `<div class="toast-body"><%= success %></div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  } 
+</script>

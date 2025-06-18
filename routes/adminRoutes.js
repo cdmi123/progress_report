@@ -15,20 +15,36 @@ function isAuthenticated(req, res, next) {
 
 // ✅ GET: Admin Dashboard (only one definition)
 router.get('/admin/dashboard', isAuthenticated, async (req, res) => {
-  const studentCount = await Student.countDocuments();
-  const courseCount = await Course.countDocuments();
-  const reportCount = await Report.countDocuments();
-  const courses = await Course.find();
-  const admin = await Admin.findById(req.session.adminId);
-
-  res.render('admin/dashboard', {
-    layout: 'admin/layout',
-    admin,
-    studentCount,
-    courseCount,
-    reportCount,
-    courses
-  });
+  try {
+      const totalStudents = await Student.countDocuments();
+      const totalCourses = await Course.countDocuments();
+      const totalReports = await Report.countDocuments();
+      const totalAdmins = await Admin.countDocuments();
+  
+      const courses = await Course.find();
+      const chartLabels = [];
+      const chartData = [];
+  
+      for (const course of courses) {
+        const studentCount = await Student.countDocuments({ courses: course._id });
+        chartLabels.push(course.name);
+        chartData.push(studentCount);
+      }
+  
+      res.render('admin/dashboard', {
+        totalStudents,
+        totalCourses,
+        totalReports,
+        totalAdmins,
+        chartLabels: ['Node.js', 'PHP', 'Laravel'],
+        chartData: [5, 3, 8],
+        activePage: 'dashboard',
+      });
+  
+    } catch (err) {
+      console.error('Dashboard Load Error:', err);
+      res.status(500).send('Error loading dashboard');
+    }
 });
 
 

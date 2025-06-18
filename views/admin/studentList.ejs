@@ -1,56 +1,106 @@
-
-
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="fw-bold text-primary">👥 All Students</h2>
-  <a href="/admin/student/add" class="btn btn-outline-success">
+  <h2 class="fw-bold text-primary">
+    <i class="bi bi-people-fill"></i> All Students
+  </h2>
+  <a href="/admin/student/add" class="btn btn-success">
     <i class="bi bi-person-plus-fill"></i> Add Student
   </a>
 </div>
 
 <div class="card shadow-sm">
-  <div class="card-body table-responsive">
-    <table class="table table-bordered table-striped text-center">
-      <thead class="table-light">
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Reg No</th>
-          <th>Course</th>
-          <th>Contact</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% students.forEach((s, i) => { %>
-        <tr>
-          <td><%= i + 1 %></td>
-          <td><%= s.name %></td>
-          <td><%= s.regNo %></td>
-          <td>
-            <% s.courses.forEach(c => { %>
-            <span class="badge bg-primary"><%= c.name %></span>
-            <% }) %>
-          </td>
+  <div class="card-body">
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+      <input type="text" id="searchInput" class="form-control w-50" placeholder="Search by name, reg no or phone...">
+      <div>
+        <button onclick="exportToCSV()" class="btn btn-outline-secondary me-2">
+          <i class="bi bi-download"></i> Export CSV
+        </button>
+        <button onclick="window.print()" class="btn btn-outline-primary">
+          <i class="bi bi-printer"></i> Print
+        </button>
+      </div>
+    </div>
 
-          <td><%= s.contact %></td>
-          <td>
-            <% s.courses.forEach(c => { %>
-            <a href="/report/<%= s._id %>?course=<%= c._id %>"
-              class="btn btn-sm btn-primary mb-1">
-              View <%= c.name %> Report
-            </a>
-            <% }) %>
-            <a href="/admin/student/delete/<%= s._id %>"
-              class="btn btn-sm btn-danger"
-              onclick="return confirm('Are you sure?')">Delete</a>
-
-              <a href="/admin/student/edit/<%= s._id %>" class="btn btn-sm btn-warning">
-              <i class="bi bi-pencil-square"></i> Edit </a>
-
-          </td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table id="studentTable" class="table table-bordered table-hover align-middle">
+        <thead class="table-primary text-center">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Reg No</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Faculty</th>
+            <th scope="col">Courses</th>
+            <th scope="col">Progress</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% students.forEach((student, index) => { %>
+            <tr class="text-center">
+              <td><%= index + 1 %></td>
+              <td><%= student.name %></td>
+              <td><%= student.regNo %></td>
+              <td><%= student.contact %></td>
+              <td><%= student.facultyName %></td>
+              <td>
+                <% student.courses.forEach(course => { %>
+                  <span class="badge bg-info text-dark"><%= course.name %></span>
+                <% }) %>
+              </td>
+              <td>
+                <% student.courseProgress.forEach(cp => { %>
+                  <div class="mb-1">
+                    <small><%= cp.courseName %>: <%= cp.percent %>%</small>
+                    <div class="progress" style="height: 6px;">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: <%= cp.percent %>%"></div>
+                    </div>
+                  </div>
+                <% }) %>
+              </td>
+              <td>
+                <% student.courses.forEach(course => { %>
+                  <a href="/report/<%= student._id %>?course=<%= course._id %>" class="btn btn-sm btn-outline-primary mb-1">
+                    View <%= course.name %>
+                  </a><br />
+                <% }) %>
+                <a href="/admin/student/edit/<%= student._id %>" class="btn btn-sm btn-warning my-1">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <a href="/admin/student/delete/<%= student._id %>" class="btn btn-sm btn-danger my-1"
+                   onclick="return confirm('Are you sure you want to delete this student?')">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
+
+<script>
+  document.getElementById('searchInput').addEventListener('input', function () {
+    const value = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#studentTable tbody tr');
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(value) ? '' : 'none';
+    });
+  });
+
+  function exportToCSV() {
+    const table = document.getElementById('studentTable');
+    const rows = Array.from(table.querySelectorAll('tr'));
+    const csv = rows.map(row => Array.from(row.querySelectorAll('th,td'))
+      .map(cell => '"' + cell.innerText.replace(/"/g, '""') + '"')
+      .join(',')).join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'student_list.csv';
+    link.click();
+  }
+</script>

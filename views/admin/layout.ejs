@@ -1,56 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
-      background: #f0f2f5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      background-color: #f8f9fa;
     }
-    .main {
-      flex: 1;
-      padding: 30px;
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background-color: #343a40;
+      color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding: 20px 0;
+      transition: left 0.3s ease;
     }
-    .footer {
-      background: #212529;
-      color: #ffffffcc;
-      text-align: center;
-      font-size: 14px;
-      padding: 15px;
+    .sidebar.collapsed {
+      left: -250px;
     }
-    .navbar-brand {
-      font-weight: bold;
-      letter-spacing: 1px;
+    .sidebar a {
+      color: #ddd;
+      display: block;
+      padding: 10px 20px;
+      text-decoration: none;
+    }
+    .sidebar a:hover, .sidebar a.active {
+      background-color: #495057;
+      color: white;
+    }
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+      transition: margin-left 0.3s ease;
+    }
+    .main-content.collapsed {
+      margin-left: 0;
+    }
+    .navbar {
+      margin-left: 250px;
+      transition: margin-left 0.3s ease;
+    }
+    .navbar.collapsed {
+      margin-left: 0;
+    }
+    .profile-dropdown {
+      position: absolute;
+      right: 20px;
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        left: -250px;
+      }
+      .sidebar.show {
+        left: 0;
+      }
+      .navbar, .main-content {
+        margin-left: 0;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header/Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary px-4">
-    <a class="navbar-brand" href="/admin/dashboard">Welcome To Creative Classes</a>
-    <div class="ms-auto">
-      <a class="btn btn-outline-light btn-sm" href="/admin/logout">
-        <i class="bi bi-box-arrow-right"></i> Logout
+  <div class="sidebar" id="sidebar">
+    <h4 class="text-center mb-4">Admin Panel</h4>
+    <a href="/admin/dashboard" class="<%= activePage === 'dashboard' ? 'active' : '' %>"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="/admin/students" class="<%= activePage === 'students' ? 'active' : '' %>"><i class="bi bi-people"></i> Students</a>
+    <a href="/admin/student/add" class="<%= activePage === 'addStudent' ? 'active' : '' %>"><i class="bi bi-person-plus"></i> Add Student</a>
+    <a href="/admin/course/add" class="<%= activePage === 'addCourse' ? 'active' : '' %>"><i class="bi bi-journal-plus"></i> Add Course</a>
+    <a href="/admin/report/all" class="<%= activePage === 'reports' ? 'active' : '' %>"><i class="bi bi-bar-chart"></i> Reports</a>
+    <a href="/admin/logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
+  </div>
+
+  <nav class="navbar navbar-light bg-white shadow-sm d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+      <button class="btn btn-outline-secondary d-md-none" id="toggleSidebar"><i class="bi bi-list"></i></button>
+      <span class="navbar-brand mb-0 h5 ms-3">Welcome, Admin</span>
+    </div>
+    <div class="dropdown me-3">
+      <a class="btn btn-outline-dark dropdown-toggle" href="#" role="button" id="profileMenu" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-person-circle"></i>
       </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
+        <li><a class="dropdown-item" href="#">Profile</a></li>
+        <li><a class="dropdown-item" href="#">Settings</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="/admin/logout">Logout</a></li>
+      </ul>
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <div class="main container">
+  <main class="main-content" id="mainContent">
     <%- body %>
-  </div>
+  </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    &copy; <%= new Date().getFullYear() %> Creative Classes. All rights reserved.
-  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const toggleBtn = document.getElementById('toggleSidebar');
+
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('show');
+    });
+  </script>
 
 </body>
 </html>
