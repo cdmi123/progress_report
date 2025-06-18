@@ -1,0 +1,52 @@
+
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold text-primary">👥 All Students</h2>
+  <a href="/admin/student/add" class="btn btn-outline-success">
+    <i class="bi bi-person-plus-fill"></i> Add Student
+  </a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body table-responsive">
+    <table class="table table-bordered table-striped text-center">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Reg No</th>
+          <th>Course</th>
+          <th>Contact</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% students.forEach((s, i) => { %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= s.name %></td>
+          <td><%= s.regNo %></td>
+          <td>
+            <% s.courses.forEach(c => { %>
+            <span class="badge bg-primary"><%= c.name %></span>
+            <% }) %>
+          </td>
+
+          <td><%= s.contact %></td>
+          <td>
+            <% s.courses.forEach(c => { %>
+            <a href="/report/<%= s._id %>?course=<%= c._id %>"
+              class="btn btn-sm btn-primary mb-1">
+              View <%= c.name %> Report
+            </a>
+            <% }) %>
+            <a href="/admin/student/delete/<%= s._id %>"
+              class="btn btn-sm btn-danger"
+              onclick="return confirm('Are you sure?')">Delete</a>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

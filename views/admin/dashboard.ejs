@@ -1,0 +1,60 @@
+
+
+<h2 class="fw-bold text-primary mb-4">👋 Welcome, <%= admin.name %></h2>
+
+<!-- Summary Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card border-start border-primary border-4 shadow-sm">
+      <div class="card-body">
+        <h6>Total Students</h6>
+        <h2 class="text-primary"><%= studentCount %></h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-start border-success border-4 shadow-sm">
+      <div class="card-body">
+        <h6>Total Courses</h6>
+        <h2 class="text-success"><%= courseCount %></h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-start border-warning border-4 shadow-sm">
+      <div class="card-body">
+        <h6>Total Reports</h6>
+        <h2 class="text-warning"><%= reportCount || 0 %></h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="mb-4 d-flex flex-wrap gap-2">
+  <a href="/admin/student/add" class="btn btn-outline-primary"><i class="bi bi-person-plus"></i> Add Student</a>
+  <a href="/admin/course/add" class="btn btn-outline-success"><i class="bi bi-journal-plus"></i> Add Course</a>
+  <a href="/admin/students" class="btn btn-outline-secondary"><i class="bi bi-people"></i> View Students</a>
+  <a href="/admin/courses" class="btn btn-outline-secondary"><i class="bi bi-collection"></i> View Courses</a>
+</div>
+
+<!-- Course List -->
+<div class="card shadow-sm">
+  <div class="card-header bg-light">
+    <h5 class="mb-0">📚 All Courses</h5>
+  </div>
+  <div class="card-body">
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+      <% courses.forEach(c => { %>
+        <div class="col">
+          <div class="card h-100 border shadow-sm">
+            <div class="card-body">
+              <h6 class="fw-bold text-dark"><i class="bi bi-book"></i> <%= c.name %></h6>
+              <p class="mb-0 text-muted">Topics: <%= c.topics.length %></p>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</div>

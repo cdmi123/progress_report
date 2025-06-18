@@ -1,0 +1,36 @@
+
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold text-primary">📚 All Courses</h2>
+  <a href="/admin/course/add" class="btn btn-outline-success">
+    <i class="bi bi-journal-plus"></i> Add Course
+  </a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body table-responsive">
+    <table class="table table-bordered table-striped text-center">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Course Name</th>
+          <th>Total Topics</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% courses.forEach((course, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= course.name %></td>
+            <td><%= course.topics.length %></td>
+            <td>
+              <a href="/admin/course/delete/<%= course._id %>" class="btn btn-sm btn-danger"
+                 onclick="return confirm('Delete this course?')">Delete</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
