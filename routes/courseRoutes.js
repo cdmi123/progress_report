@@ -5,7 +5,7 @@ const Course = require('../models/Course');
 // Middleware to protect admin
 function isAdmin(req, res, next) {
   if (req.session.adminId) return next();
-  res.redirect('/admin/login');
+  res.redirect('/admin');
 }
 
 // GET: Show all courses

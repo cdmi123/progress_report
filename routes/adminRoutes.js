@@ -10,7 +10,7 @@ const Report = require('../models/Report');
 // Middleware to protect routes
 function isAuthenticated(req, res, next) {
   if (req.session.adminId) return next();
-  res.redirect('/admin/login');
+  res.redirect('/admin');
 }
 
 // ✅ GET: Admin Dashboard (only one definition)
@@ -45,7 +45,7 @@ router.post('/admin/register', async (req, res) => {
 
   try {
     await Admin.create({ name, email, password: hashed });
-    res.redirect('/admin/login');
+    res.redirect('/admin');
   } catch (err) {
     res.send("Email already exists");
   }
@@ -53,7 +53,7 @@ router.post('/admin/register', async (req, res) => {
 
 // GET: Login page
 router.get('/admin', (req, res) => {
-  res.render('admin/login');
+  res.render('admin/login', { layout: false });
 });
 
 // POST: Login
@@ -72,7 +72,7 @@ router.post('/admin/login', async (req, res) => {
 // GET: Logout
 router.get('/admin/logout', (req, res) => {
   req.session.destroy();
-  res.redirect('/admin/login');
+  res.redirect('/admin');
 });
 
 router.get('/admin/student/edit/:id', async (req, res) => {
@@ -87,7 +87,7 @@ router.get('/admin/student/edit/:id', async (req, res) => {
 });
 
 router.post('/admin/student/edit/:id', async (req, res) => {
-  const { name, contact, regNo, facultyName, startDate, endDate, courses } = req.body;
+  const { name, contact, regNo, facultyName, startDate, endDate, courses , password } = req.body;
 
   await Student.findByIdAndUpdate(req.params.id, {
     name,
@@ -96,7 +96,8 @@ router.post('/admin/student/edit/:id', async (req, res) => {
     facultyName,
     startDate,
     endDate,
-    courses: Array.isArray(courses) ? courses : [courses]
+    courses: Array.isArray(courses) ? courses : [courses],
+    password
   });
 
   res.redirect('/admin/students');

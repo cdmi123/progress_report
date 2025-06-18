@@ -32,7 +32,7 @@ router.get('/student/logout', (req, res) => {
 // Middleware to protect admin
 function isAdmin(req, res, next) {
   if (req.session.adminId) return next();
-  res.redirect('/admin/login');
+  res.redirect('/admin');
 }
 
 // Add student form
@@ -112,6 +112,7 @@ router.get('/student/report/:reportId', isStudentLoggedIn, async (req, res) => {
     course: report.course
   });
 });
+
 
 
 module.exports = router;
