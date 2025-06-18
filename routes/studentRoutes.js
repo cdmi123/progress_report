@@ -4,6 +4,31 @@ const Student = require('../models/Student');
 const Course = require('../models/Course');
 const Report = require('../models/Report');
 
+// Show login form
+router.get('/', (req, res) => {
+  res.render('student/login', { layout: false });
+});
+
+// Handle login
+router.post('/student/login', async (req, res) => {
+  const { contact, password } = req.body;
+  const student = await Student.findOne({ contact, password });
+
+  if (!student) {
+    return res.render('student/login', { layout: false, error: 'Invalid credentials' });
+  }
+
+  req.session.studentId = student._id;
+  res.redirect('/student/dashboard');
+});
+
+// Logout
+router.get('/student/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/student/login');
+  });
+});
+
 // Middleware to protect admin
 function isAdmin(req, res, next) {
   if (req.session.adminId) return next();
@@ -21,7 +46,7 @@ router.get('/admin/student/add', async (req, res) => {
 
 // Save new student
 router.post('/admin/student/add', async (req, res) => {
-  const { name, contact, regNo, facultyName, startDate, endDate, courses } = req.body;
+  const { name, contact, regNo, facultyName, startDate, endDate, courses , password } = req.body;
 
   const student = await Student.create({
     name,
@@ -30,7 +55,8 @@ router.post('/admin/student/add', async (req, res) => {
     facultyName,
     startDate,
     endDate,
-    courses: Array.isArray(courses) ? courses : [courses] // ✅ support single & multiple
+    courses: Array.isArray(courses) ? courses : [courses], // ✅ support single & multiple
+    password
   });
 
   // Create a report for each selected course
@@ -70,5 +96,22 @@ router.get('/admin/students', isAdmin, async (req, res) => {
 
   res.render('admin/studentList', { students, courses, selectedCourse: req.query.course || '' });
 });
+
+function isStudentLoggedIn(req, res, next) {
+  if (!req.session.studentId) return res.redirect('/student/login');
+  next();
+}
+
+router.get('/student/report/:reportId', isStudentLoggedIn, async (req, res) => {
+  const report = await Report.findById(req.params.reportId).populate('course');
+  const student = await Student.findById(req.session.studentId);
+
+  res.render('student/progressReport', {
+    student,
+    report,
+    course: report.course
+  });
+});
+
 
 module.exports = router;

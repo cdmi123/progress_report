@@ -52,7 +52,7 @@ router.post('/admin/register', async (req, res) => {
 });
 
 // GET: Login page
-router.get('/admin/login', (req, res) => {
+router.get('/admin', (req, res) => {
   res.render('admin/login');
 });
 
@@ -74,5 +74,33 @@ router.get('/admin/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/admin/login');
 });
+
+router.get('/admin/student/edit/:id', async (req, res) => {
+  const student = await Student.findById(req.params.id).populate('courses');
+  const courses = await Course.find();
+
+  res.render('admin/editStudent', {
+    layout: 'admin/layout',
+    student,
+    courses
+  });
+});
+
+router.post('/admin/student/edit/:id', async (req, res) => {
+  const { name, contact, regNo, facultyName, startDate, endDate, courses } = req.body;
+
+  await Student.findByIdAndUpdate(req.params.id, {
+    name,
+    contact,
+    regNo,
+    facultyName,
+    startDate,
+    endDate,
+    courses: Array.isArray(courses) ? courses : [courses]
+  });
+
+  res.redirect('/admin/students');
+});
+
 
 module.exports = router;

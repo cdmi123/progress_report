@@ -7,7 +7,8 @@ const studentSchema = new mongoose.Schema({
   facultyName: String,
   startDate: String,
   endDate: String,
-  courses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }] // ✅ multiple courses
+  courses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }], // ✅ multiple courses
+  password: { type: String, required: true }
 });
 
 module.exports = mongoose.model('Student', studentSchema);
