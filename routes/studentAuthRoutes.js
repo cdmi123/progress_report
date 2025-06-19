@@ -10,11 +10,12 @@ function isStudentLoggedIn(req, res, next) {
 
 router.get('/student/dashboard', isStudentLoggedIn, async (req, res) => {
   const student = await Student.findById(req.session.studentId).populate('courses');
-  const reports = await Report.find({ student: student._id }).populate('course');
+  const studentReports = await Report.find({ student: student._id }).populate('course');
 
   res.render('student/dashboard', {
     student,
-    reports
+    studentReports,
+    layout: 'student/layout'
   });
 });
 module.exports = router;

@@ -16,7 +16,7 @@ router.get('/report/:studentId', async (req, res) => {
   const report = await Report.findOne({ student: student._id, course: courseId });
   const selectedCourse = await Course.findById(courseId);
 
-  res.render('admin/progressReport', { student, report, course: selectedCourse });
+  res.render('admin/progressReport', { student, report, course: selectedCourse , layout: 'admin/layout' });
 });
 
 
@@ -25,7 +25,7 @@ router.get('/Admin/report/:studentId', async (req, res) => {
   const student = await Student.findById(req.params.studentId).populate('course');
   const report = await Report.findOne({ student: student._id });
 
-  res.render('admin/progressReport', { student, course: student.course, report });
+  res.render('admin/progressReport', { student, course: student.course, report , layout: 'admin/layout' });
 });
 
 // POST: Update topic progress

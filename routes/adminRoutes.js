@@ -39,6 +39,7 @@ router.get('/admin/dashboard', isAuthenticated, async (req, res) => {
         chartLabels: ['Node.js', 'PHP', 'Laravel'],
         chartData: [5, 3, 8],
         activePage: 'dashboard',
+        layout: 'admin/layout'
       });
   
     } catch (err) {

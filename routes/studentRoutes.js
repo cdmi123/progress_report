@@ -42,7 +42,8 @@ router.get('/admin/student/add', async (req, res) => {
     layout: 'admin/layout',
     courses,
     success: '✅ Student added successfully!',
-    activePage: 'addStudent'
+    activePage: 'addStudent',
+    layout: 'admin/layout'
   });
 });
 
@@ -135,7 +136,8 @@ router.get('/student/report/:reportId', isStudentLoggedIn, async (req, res) => {
   res.render('student/progressReport', {
     student,
     report,
-    course: report.course
+    course: report.course,
+    layout: 'student/layout'
   });
 });
 
