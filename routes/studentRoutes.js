@@ -116,7 +116,7 @@ router.get('/admin/students', isAdmin, async (req, res) => {
       }
     }
 
-    res.render('admin/studentList', { students , activePage: 'students'});
+    res.render('admin/studentList', { students , activePage: 'students',layout: 'admin/layout'});
   } catch (err) {
     console.error(err);
     res.status(500).send('Error loading student list');
