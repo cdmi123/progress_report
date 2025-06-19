@@ -51,7 +51,7 @@ router.get('/admin/dashboard', isAuthenticated, async (req, res) => {
 
 // GET: Register page
 router.get('/admin/register', (req, res) => {
-  res.render('admin/register');
+  res.render('admin/register',{ layout: false });
 });
 
 // POST: Register
