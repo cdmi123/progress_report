@@ -11,12 +11,12 @@ function isAdmin(req, res, next) {
 // GET: Show all courses
 router.get('/admin/courses', isAdmin, async (req, res) => {
   const courses = await Course.find();
-  res.render('admin/courseList', { courses });
+  res.render('admin/courseList', { courses});
 });
 
 // GET: Add course form
 router.get('/admin/course/add', isAdmin, (req, res) => {
-  res.render('admin/addCourse');
+  res.render('admin/addCourse',{activePage: 'addCourse'});
 });
 
 // POST: Add new course

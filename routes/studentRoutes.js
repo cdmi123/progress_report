@@ -41,7 +41,8 @@ router.get('/admin/student/add', async (req, res) => {
   res.render('admin/addStudent', {
     layout: 'admin/layout',
     courses,
-    success: '✅ Student added successfully!'
+    success: '✅ Student added successfully!',
+    activePage: 'addStudent'
   });
 });
 
@@ -114,7 +115,7 @@ router.get('/admin/students', isAdmin, async (req, res) => {
       }
     }
 
-    res.render('admin/studentList', { students });
+    res.render('admin/studentList', { students , activePage: 'students'});
   } catch (err) {
     console.error(err);
     res.status(500).send('Error loading student list');

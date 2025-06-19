@@ -1,20 +1,31 @@
-<h3 class="text-primary">Welcome, <%= student.name %></h3>
-<p><strong>Registered Courses:</strong>
-  <% student.courses.forEach(c => { %>
-    <span class="badge bg-secondary"><%= c.name %></span>
-  <% }) %>
-</p>
 
-<div class="card mt-4 shadow-sm">
-  <div class="card-body">
-    <h5 class="mb-3">📋 Your Progress Reports</h5>
-    <ul class="list-group">
-      <% reports.forEach(r => { %>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          <strong><%= r.course.name %></strong>
-          <a href="/student/report/<%= r._id %>" class="btn btn-sm btn-primary">View Report</a>
-        </li>
-      <% }) %>
-    </ul>
+
+<div class="container py-4">
+  <h2 class="text-primary mb-4"><i class="bi bi-person-circle"></i> Student Dashboard</h2>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title text-dark mb-3">Welcome, <strong><%= student.name %></strong></h5>
+      <p class="mb-1"><strong>Registration No:</strong> <%= student.regNo %></p>
+      <p class="mb-1"><strong>Phone:</strong> <%= student.contact %></p>
+      <p class="mb-1"><strong>Faculty:</strong> <%= student.facultyName %></p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <% studentReports.forEach(report => { %>
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-info shadow-sm h-100">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-info"><%= report.course.name %></h5>
+            <p class="mb-2"><strong>Start Date:</strong> <%= student.startDate %></p>
+            <p class="mb-3"><strong>End Date:</strong> <%= student.endDate %></p>
+            <a href="/student/report/<%= report._id %>" class="mt-auto btn btn-outline-primary w-100">
+              <i class="bi bi-file-earmark-text"></i> View Progress Report
+            </a>
+          </div>
+        </div>
+      </div>
+    <% }) %>
   </div>
 </div>
