@@ -11,7 +11,7 @@ function isAdmin(req, res, next) {
 // GET: Show all courses
 router.get('/admin/courses', isAdmin, async (req, res) => {
   const courses = await Course.find();
-  res.render('admin/courseList', { courses , layout: 'admin/layout'});
+  res.render('admin/courseList', { courses , layout: 'admin/layout',activePage: 'addCourse'});
 });
 
 // GET: Add course form
