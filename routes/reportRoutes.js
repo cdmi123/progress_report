@@ -16,7 +16,7 @@ router.get('/report/:studentId', async (req, res) => {
   const report = await Report.findOne({ student: student._id, course: courseId });
   const selectedCourse = await Course.findById(courseId);
 
-  res.render('admin/progressReport', { student, report, course: selectedCourse , layout: 'admin/layout' });
+  res.render('admin/progressReport', { student, report, course: selectedCourse , layout: 'admin/layout', activePage: 'students' });
 });
 
 
@@ -44,8 +44,6 @@ router.post('/report/update-topic', async (req, res) => {
     report.topics[topicIndex].date = isChecked ? date : '';
 
     await report.save(); // ✅ Save the full document
-
-    console.log("✅ Topic updated:", report.topics[topicIndex]);
     res.sendStatus(200);
   } catch (err) {
     console.error("❌ Update error:", err);

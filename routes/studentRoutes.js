@@ -137,7 +137,8 @@ router.get('/student/report/:reportId', isStudentLoggedIn, async (req, res) => {
     student,
     report,
     course: report.course,
-    layout: 'student/layout'
+    layout: 'student/layout',
+    activePage: 'report'
   });
 });
 
