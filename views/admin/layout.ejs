@@ -56,9 +56,13 @@
     @media (max-width: 768px) {
       .sidebar {
         left: -250px;
+        z-index: 9999;
       }
       .sidebar.show {
         left: 0;
+      }
+      .sidebar.hide {
+        left: -250px;
       }
       .navbar, .main-content {
         margin-left: 0;
@@ -69,7 +73,10 @@
 <body>
 
   <div class="sidebar" id="sidebar">
-    <h4 class="text-center mb-4">Admin Panel</h4>
+    <div class="d-flex justify-content-between align-content-center mb-3 px-3">
+      <h4 class="text-center mb-0">Admin Panel</h4>
+      <button class="bg-transparent text-white border-0 fs-4 me-1 d-block d-md-none" id="close_btn"><i class="bi bi-x-lg"></i></button>
+    </div>
     <a href="/admin/dashboard" class="<%= activePage === 'dashboard' ? 'active' : '' %>"><i class="bi bi-speedometer2"></i> Dashboard</a>
     <a href="/admin/students" class="<%= activePage === 'students' ? 'active' : '' %>"><i class="bi bi-people"></i> Students</a>
     <a href="/admin/student/add" class="<%= activePage === 'addStudent' ? 'active' : '' %>"><i class="bi bi-person-plus"></i> Add Student</a>
@@ -80,7 +87,7 @@
 
   <nav class="navbar navbar-light bg-white shadow-sm d-flex justify-content-between align-items-center">
     <div class="d-flex align-items-center">
-      <button class="btn btn-outline-secondary d-md-none" id="toggleSidebar"><i class="bi bi-list"></i></button>
+      <button class="btn btn-outline-secondary d-md-none ms-3" id="toggleSidebar"><i class="bi bi-list"></i></button>
       <span class="navbar-brand mb-0 h5 ms-3">Welcome, Admin</span>
     </div>
     <div class="dropdown me-3">
@@ -105,9 +112,13 @@
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.getElementById('mainContent');
     const toggleBtn = document.getElementById('toggleSidebar');
+    const closeBtn = document.getElementById('close_btn');
 
     toggleBtn.addEventListener('click', () => {
       sidebar.classList.toggle('show');
+    });
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.remove('show').toggle('hide');
     });
   </script>
 
