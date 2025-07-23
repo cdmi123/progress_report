@@ -13,6 +13,7 @@ const courseRoutes = require('./routes/courseRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const studentAuthRoutes = require('./routes/studentAuthRoutes');
+const flash = require('connect-flash');
 
 // Load environment variables
 dotenv.config();
@@ -29,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
+app.use(flash());
 
 // ✅ Register session middleware BEFORE routes
 app.use(session({

@@ -1,5 +1,3 @@
-
-
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2 class="fw-bold text-primary">📚 All Courses</h2>
   <a href="/admin/course/add" class="btn btn-outline-success">
@@ -25,8 +23,13 @@
             <td><%= course.name %></td>
             <td><%= course.topics.length %></td>
             <td>
+              <a href="/admin/course/edit/<%= course._id %>" class="btn btn-sm btn-warning me-1" title="Edit">
+                <i class="bi bi-pencil-square"></i>
+              </a>
               <a href="/admin/course/delete/<%= course._id %>" class="btn btn-sm btn-danger"
-                 onclick="return confirm('Delete this course?')">Delete</a>
+                 onclick="return confirm('Delete this course?')" title="Delete">
+                <i class="bi bi-trash"></i>
+              </a>
             </td>
           </tr>
         <% }) %>

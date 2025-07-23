@@ -8,7 +8,16 @@ const studentSchema = new mongoose.Schema({
   startDate: String,
   endDate: String,
   courses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }], // ✅ multiple courses
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+   signatureData: {
+    type: String,
+    default: null // base64 signature image
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+
 });
 
 module.exports = mongoose.model('Student', studentSchema);

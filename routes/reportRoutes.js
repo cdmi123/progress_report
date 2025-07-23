@@ -9,15 +9,42 @@ const ejs = require('ejs');
 
 // GET: View Progress Report
 router.get('/report/:studentId', async (req, res) => {
-  const { course } = req.query;
-  const student = await Student.findById(req.params.studentId).populate('courses');
-  const courseId = course || student.courses[0]; // default to first
+  try {
+    const { course } = req.query;
+    const student = await Student.findById(req.params.studentId).populate('courses');
 
-  const report = await Report.findOne({ student: student._id, course: courseId });
-  const selectedCourse = await Course.findById(courseId);
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
 
-  res.render('admin/progressReport', { student, report, course: selectedCourse , layout: 'admin/layout', activePage: 'students' });
+    // Use query course OR fallback to first course
+    const courseId = course || (student.courses[0]?._id.toString());
+
+    if (!courseId) {
+      return res.status(400).send('Course not specified and student has no courses');
+    }
+
+    const report = await Report.findOne({ student: student._id, course: courseId }).populate('course');
+
+    if (!report) {
+      return res.status(404).send('Progress report not found for this student and course');
+    }
+
+    const selectedCourse = report.course; // already populated
+
+    res.render('admin/progressReport', {
+      student,
+      report,
+      course: selectedCourse,
+      layout: 'admin/layout',
+      activePage: 'students'
+    });
+  } catch (err) {
+    console.error('Error loading report:', err);
+    res.status(500).send('Something went wrong');
+  }
 });
+
 
 
 // Admin View Progress Report

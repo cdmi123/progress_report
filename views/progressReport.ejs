@@ -98,6 +98,7 @@
           <th>✔</th>
           <th>Topic</th>
           <th>Date</th>
+          <th>Signature</th>
         </tr>
       </thead>
       <tbody>
@@ -113,6 +114,7 @@
               <input type="text" id="date-<%= i %>" class="form-control form-control-sm date-input"
                      value="<%= topic.date %>" readonly placeholder="DD / MM / YYYY" <%= topic.isChecked ? 'disabled' : '' %>/>
             </td>
+            <td><img id="signaturePreview" src="<%= student.signatureData %>" alt="Signature Preview" style="max-width: 300px; margin-top: 10px; display: none;" /></td>
           </tr>
         <% }); %>
       </tbody>

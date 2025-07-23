@@ -98,6 +98,7 @@
           <th>✔</th>
           <th>Topic</th>
           <th>Date</th>
+          <th>Signature</th>
         </tr>
       </thead>
       <tbody>
@@ -113,6 +114,7 @@
               <input type="text" id="date-<%= i %>" class="form-control form-control-sm date-input"
                      value="<%= topic.date %>" readonly placeholder="DD / MM / YYYY"/>
             </td>
+            <td><img id="signaturePreview-<%= i %>" src="<%= student.signatureData %>" alt="Signature Preview" style="max-width: 70px; margin-top: 10px; <%= topic.isChecked ? '' : 'display: none;' %> " /></td>
           </tr>
         <% }); %>
       </tbody>
@@ -142,9 +144,13 @@
       const i = this.dataset.index;
       const isChecked = this.checked;
       const date = isChecked ? getCurrentDate() : '';
+      const signature = isChecked ? '': 'display: none';
+
 
       // Set the value in the date input field
       document.getElementById(`date-${i}`).value = date;
+      document.getElementById(`signaturePreview-${i}`).style.display = signature;
+
 
       // Send the update to the server
       try {

@@ -1,0 +1,38 @@
+<%- layout('admin/layout') %>
+
+<div class="container py-4">
+  <h2 class="text-primary mb-4">
+    <i class="bi bi-journal-plus"></i> Create Custom Progress Report for <%= student.name %>
+  </h2>
+
+ <form method="POST" action="/admin/report/custom/<%= student._id %>">
+  <input type="text" name="courseName" class="form-control" placeholder="Course Name" required>
+
+  <div id="topicFields">
+    <div class="input-group mb-2">
+      <input type="text" name="topicTitles[]" class="form-control" placeholder="Enter topic name" required>
+      <button type="button" class="btn btn-danger" onclick="removeTopic(this)">🗑</button>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-secondary mb-3" onclick="addTopic()">➕ Add Topic</button>
+  <br>
+  <button type="submit" class="btn btn-primary">Create Blank Report</button>
+</form>
+</div>
+
+<script>
+  function addTopic() {
+    const field = document.createElement('div');
+    field.className = 'input-group mb-2';
+    field.innerHTML = `
+      <input type="text" name="topicTitles[]" class="form-control" placeholder="Enter topic name" required>
+      <button type="button" class="btn btn-danger" onclick="removeTopic(this)">🗑</button>
+    `;
+    document.getElementById('topicFields').appendChild(field);
+  }
+
+  function removeTopic(button) {
+    button.parentElement.remove();
+  }
+</script>

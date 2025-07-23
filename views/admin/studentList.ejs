@@ -30,7 +30,6 @@
             <th scope="col">Reg No</th>
             <th scope="col">Phone</th>
             <th scope="col">Faculty</th>
-            <th scope="col">Courses</th>
             <th scope="col">Progress</th>
             <th scope="col">Actions</th>
           </tr>
@@ -43,11 +42,6 @@
               <td><%= student.regNo %></td>
               <td><%= student.contact %></td>
               <td><%= student.facultyName %></td>
-              <td>
-                <% student.courses.forEach(course => { %>
-                  <span class="badge bg-info text-dark"><%= course.name %></span>
-                <% }) %>
-              </td>
               <td>
                 <% student.courseProgress.forEach(cp => { %>
                   <div class="mb-1">

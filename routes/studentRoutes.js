@@ -59,7 +59,8 @@ router.post('/admin/student/add', async (req, res) => {
     startDate,
     endDate,
     courses: Array.isArray(courses) ? courses : [courses], // ✅ support single & multiple
-    password
+    password,
+    signatureData: req.body.signatureData
   });
 
   // Create a report for each selected course
@@ -93,36 +94,53 @@ router.get('/admin/student/delete/:id', isAdmin, async (req, res) => {
 router.get('/admin/students', isAdmin, async (req, res) => {
   try {
     const students = await Student.find().populate('courses');
+    const allReports = await Report.find().populate('course');
+
+    const studentData = [];
 
     for (const student of students) {
-      student.courseProgress = [];
+      const courseProgress = [];
+      const reports = [];
 
       for (const course of student.courses) {
-        const report = await Report.findOne({ student: student._id, course: course._id });
-        let completed = 0;
+        const report = allReports.find(r =>
+          r.student.equals(student._id) && r.course._id.equals(course._id)
+        );
 
-        if (report && Array.isArray(report.topics)) {
-          completed = report.topics.filter(t => t.isChecked).length;
-        }
+        // Calculate progress
+        const total = course.topics?.length || 0;
+        const completed = report?.topics?.filter(t => t.isChecked)?.length || 0;
+        const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-        const total = course.topics.length;
-        const percent = total > 0 ? (completed / total) * 100 : 0;
-
-        student.courseProgress.push({
+        courseProgress.push({
           courseId: course._id.toString(),
           courseName: course.name,
-          percent: Math.round(percent)
+          percent
         });
+
+        if (report) {
+          reports.push(report); // Push only if report exists
+        }
       }
+
+      studentData.push({
+        ...student.toObject(),
+        courseProgress,
+        reports
+      });
     }
 
-    res.render('admin/studentList', { students , activePage: 'students',layout: 'admin/layout'});
+    res.render('admin/studentList', {
+      students: studentData,
+      activePage: 'students',
+      layout: 'admin/layout'
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Error loading student list');
+    console.error('Error loading student list:', err);
+    res.status(500).send('Failed to load student list');
   }
-
 });
+
 
 function isStudentLoggedIn(req, res, next) {
   if (!req.session.studentId) return res.redirect('/student/login');
@@ -141,7 +159,5 @@ router.get('/student/report/:reportId', isStudentLoggedIn, async (req, res) => {
     activePage: 'report'
   });
 });
-
-
 
 module.exports = router;

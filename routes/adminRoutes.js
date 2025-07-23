@@ -93,32 +93,138 @@ router.get('/admin/logout', (req, res) => {
 });
 
 router.get('/admin/student/edit/:id', async (req, res) => {
+
   const student = await Student.findById(req.params.id).populate('courses');
   const courses = await Course.find();
 
   res.render('admin/editStudent', {
     layout: 'admin/layout',
     student,
-    courses
+    courses,
+     activePage: 'students',
   });
 });
 
 router.post('/admin/student/edit/:id', async (req, res) => {
-  const { name, contact, regNo, facultyName, startDate, endDate, courses , password } = req.body;
+  const { name, regNo, contact, facultyName, startDate, endDate, password, courses } = req.body;
 
-  await Student.findByIdAndUpdate(req.params.id, {
-    name,
-    contact,
-    regNo,
-    facultyName,
-    startDate,
-    endDate,
-    courses: Array.isArray(courses) ? courses : [courses],
-    password
-  });
+  try {
+    // 1. Update student
+    const student = await Student.findByIdAndUpdate(req.params.id, {
+      name,
+      regNo,
+      contact,
+      facultyName,
+      startDate,
+      endDate,
+      password,
+      courses,
+      signatureData: req.body.signatureData
+    }, { new: true });
 
-  res.redirect('/admin/students');
+    // 2. Ensure `courses` is always an array
+    const updatedCourses = Array.isArray(courses) ? courses : [courses];
+
+    // 3. Loop through each selected course
+    for (const courseId of updatedCourses) {
+      const existing = await Report.findOne({ student: student._id, course: courseId });
+
+      if (!existing) {
+        // Get course topics
+        const course = await Course.findById(courseId);
+        const blankTopics = course.topics.map(topic => ({
+          topicTitle: topic.title,
+          isChecked: false,
+          date: ''
+        }));
+
+        // Create blank report
+        const newReport = new Report({
+          student: student._id,
+          course: courseId,
+          topics: blankTopics
+        });
+
+        await newReport.save();
+      }
+    }
+
+    req.flash('success', 'Student updated successfully!');
+    res.redirect('/admin/students');
+
+  } catch (err) {
+    console.error('Update student error:', err);
+    res.status(500).send('Failed to update student'+err);
+  }
 });
+
+
+router.post('/admin/report/custom/:studentId', async (req, res) => {
+  const { courseName, topicTitles } = req.body;
+
+  try {
+    const topics = (Array.isArray(topicTitles) ? topicTitles : [topicTitles])
+      .map(title => ({
+        topicTitle: title,
+        isChecked: false,
+        date: ''
+      }));
+
+    const report = new Report({
+      student: req.params.studentId,
+      course: { name: courseName },
+      topics
+    });
+
+    await report.save();
+    res.redirect('/admin/students'); // or show success message
+  } catch (err) {
+    console.error('Custom report save error:', err);
+    res.status(500).send('Error creating report');
+  }
+});
+
+// GET route to show edit course form
+// GET: Edit Course Form
+router.get('/admin/course/edit/:id', async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id);
+    if (!course) return res.status(404).send('Course not found');
+
+    res.render('admin/editCourse', {
+      course,
+      layout: 'admin/layout',
+      activePage: 'courses'
+    });
+  } catch (error) {
+    console.error('Error loading course:', error);
+    res.status(500).send('Failed to load course');
+  }
+});
+
+router.post('/admin/course/edit/:id', async (req, res) => {
+  try {
+    const { name, topics } = req.body;
+
+    const formattedTopics = Array.isArray(topics)
+      ? topics.map(t => ({ title: t.trim() }))
+      : [{ title: topics.trim() }];
+
+    await Course.findByIdAndUpdate(req.params.id, {
+      name,
+      topics: formattedTopics
+    });
+
+    req.flash('success', 'Course updated successfully!');
+    res.redirect('/admin/courses');
+  } catch (err) {
+    console.error('Update error:', err);
+    res.status(500).send('Something went wrong while updating course.');
+  }
+});
+
+
+
 
 
 module.exports = router;

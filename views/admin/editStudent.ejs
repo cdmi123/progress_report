@@ -10,6 +10,7 @@
 <div class="card shadow-sm">
   <div class="card-body px-4 py-3">
     <form method="POST" action="/admin/student/edit/<%= student._id %>" onsubmit="return validateForm()">
+      <input type="hidden" id="signatureData" name="signatureData" value="<%= student.signatureData %>">
       <div class="row g-3 mb-3">
         <div class="col-md-6">
           <label class="form-label">Full Name</label>
@@ -56,18 +57,27 @@
         </div>
       </div>
 
-      <div class="mb-4">
-        <label class="form-label">Courses</label>
-        <input type="text" id="courseSearch" class="form-control mb-2" placeholder="Search courses...">
-        <select name="courses" id="coursesSelect" class="form-select" multiple required>
-          <% courses.forEach(course => { %>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Courses</label>
+          <select name="courses" class="form-select selectpicker"  multiple required>
+            <% courses.forEach(course => { %>
             <option value="<%= course._id %>" <%= student.courses.some(c => c._id.equals(course._id)) ? 'selected' : '' %>>
               <%= course.name %>
             </option>
           <% }) %>
-        </select>
-        <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple courses</small>
+          </select>
+          <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple courses</small>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Add Signature</label>
+          <button type="button" class=" form-control btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#signatureModal">
+            Add Signature
+          </button>
+          <img id="signaturePreview" src="<%= student.signatureData %>" alt="Signature Preview" style="max-width: 300px; margin-top: 10px; display: none;" />
+        </div>
       </div>
+
 
       <div class="d-flex justify-content-between">
         <button class="btn btn-primary">
@@ -78,6 +88,25 @@
         </a>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- Signature Modal -->
+<div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="signatureModalLabel">Draw Signature</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <canvas id="signature-pad" width="300" height="150" style="border: 1px solid #ccc;"></canvas>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="clearSignature()">Clear</button>
+        <button type="button" class="btn btn-primary" onclick="saveSignature()">Save Signature</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -103,13 +132,14 @@
     passwordInput.type = this.checked ? 'text' : 'password';
   });
 
-  if (typeof success !== 'undefined') {
-    const toast = document.createElement('div');
-    toast.className = 'toast position-fixed bottom-0 end-0 m-3 show bg-success text-white';
-    toast.innerHTML = `<div class="toast-body"><%= success %></div>`;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-  }
+if (success) {
+  const toast = document.createElement('div');
+  toast.className = 'toast position-fixed bottom-0 end-0 m-3 show bg-success text-white';
+  toast.innerHTML = `<div class="toast-body">${success}</div>`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
 
   // Real-time course search
   const courseSearch = document.getElementById('courseSearch');
@@ -134,3 +164,40 @@
     return true;
   }
 </script>
+
+<!-- signature script -->
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"></script>
+
+<script>
+  const canvas = document.getElementById('signature-pad');
+  const signaturePad = new SignaturePad(canvas);
+
+  function clearSignature() {
+    signaturePad.clear();
+  }
+
+  function saveSignature() {
+    if (signaturePad.isEmpty()) {
+      alert("Please draw a signature.");
+    } else {
+      const dataURL = signaturePad.toDataURL();
+
+      // Store in hidden field
+      document.getElementById('signatureData').value = dataURL;
+
+      // Show in preview image
+      const previewImg = document.getElementById('signaturePreview');
+      previewImg.src = dataURL;
+      previewImg.style.display = "block";
+
+      // Close modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById('signatureModal'));
+      modal.hide();
+    }
+  }
+</script>
+
