@@ -210,18 +210,65 @@ router.post('/admin/course/edit/:id', async (req, res) => {
       ? topics.map(t => ({ title: t.trim() }))
       : [{ title: topics.trim() }];
 
-    await Course.findByIdAndUpdate(req.params.id, {
+    const courseId = req.params.id;
+
+    // Step 1: Get old course topics
+    const oldCourse = await Course.findById(courseId);
+    const oldTopics = oldCourse.topics.map(t => t.title);
+    const newTopics = formattedTopics.map(t => t.title);
+
+    // Step 2: Update the course
+    await Course.findByIdAndUpdate(courseId, {
       name,
-      topics: formattedTopics
+      topics: formattedTopics,
     });
 
-    req.flash('success', 'Course updated successfully!');
+    // Step 3: Get all reports for this course
+    const reports = await Report.find({ CourseId: courseId });
+
+    // Step 4: Sync updated topic names and add new topics
+    for (const report of reports) {
+      let updated = false;
+
+      // --- Rename topics if changed ---
+      for (let i = 0; i < oldTopics.length; i++) {
+        const oldTitle = oldTopics[i];
+        const newTitle = newTopics[i];
+        if (oldTitle !== newTitle) {
+          report.progress = report.progress.map(entry =>
+            entry.topic === oldTitle ? { ...entry.toObject(), topic: newTitle } : entry
+          );
+          updated = true;
+        }
+      }
+
+      // --- Add new topics not present in report.progress ---
+      for (const newTitle of newTopics) {
+        const alreadyExists = report.progress.some(p => p.topic === newTitle);
+        if (!alreadyExists) {
+          report.progress.push({
+            topic: newTitle,
+            status: false,
+            date: '',
+            signature: '',
+          });
+          updated = true;
+        }
+      }
+
+      if (updated) await report.save();
+    }
+
+    req.flash('success', 'Course and student reports updated successfully!');
     res.redirect('/admin/courses');
+
   } catch (err) {
     console.error('Update error:', err);
-    res.status(500).send('Something went wrong while updating course.');
+    res.status(500).send('Error updating course or reports.');
   }
 });
+
+
 
 
 
