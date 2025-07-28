@@ -143,7 +143,7 @@ router.get('/admin/students', isAdmin, async (req, res) => {
 
 
 function isStudentLoggedIn(req, res, next) {
-  if (!req.session.studentId) return res.redirect('/student/login');
+  if (!req.session.studentId) return res.redirect('/');
   next();
 }
 

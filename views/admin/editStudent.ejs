@@ -17,9 +17,8 @@
           <input name="name" class="form-control" value="<%= student.name %>" required />
         </div>
         <div class="col-md-6">
-          <label class="form-label">Phone Number</label>
-          <input name="contact" class="form-control" value="<%= student.contact %>"
-                 required pattern="^[0-9]{10}$" title="Enter a 10-digit mobile number" />
+          <label class="form-label">Email</label>
+          <input name="email" class="form-control" required type="email" value="<%= student.email %>"/>
         </div>
       </div>
 
@@ -46,14 +45,19 @@
         </div>
       </div>
 
-      <div class="row g-3 mb-3">
+      <div class="row g-3 mb-4">
         <div class="col-md-6">
           <label class="form-label">Start Date</label>
           <input type="date" name="startDate" class="form-control" value="<%= student.startDate %>" required />
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <label class="form-label">End Date</label>
           <input type="date" name="endDate" class="form-control" value="<%= student.endDate %>" required />
+        </div>
+         <div class="col-md-4">
+          <label class="form-label">Phone No:</label>
+          <input name="contact" class="form-control" required pattern="^[0-9]{10}$"
+            title="Enter a 10-digit mobile number" value="<%= student.contact %>"/>
         </div>
       </div>
 

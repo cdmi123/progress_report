@@ -7,6 +7,11 @@ const studentSchema = new mongoose.Schema({
   facultyName: String,
   startDate: String,
   endDate: String,
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
   courses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }], // ✅ multiple courses
   password: { type: String, required: true },
    signatureData: {

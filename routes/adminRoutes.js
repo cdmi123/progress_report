@@ -106,7 +106,7 @@ router.get('/admin/student/edit/:id', async (req, res) => {
 });
 
 router.post('/admin/student/edit/:id', async (req, res) => {
-  const { name, regNo, contact, facultyName, startDate, endDate, password, courses } = req.body;
+  const { name, regNo, contact, facultyName, startDate, endDate, password, courses , email } = req.body;
 
   try {
     // 1. Update student
@@ -119,7 +119,8 @@ router.post('/admin/student/edit/:id', async (req, res) => {
       endDate,
       password,
       courses,
-      signatureData: req.body.signatureData
+      signatureData: req.body.signatureData,
+      email,
     }, { new: true });
 
     // 2. Ensure `courses` is always an array

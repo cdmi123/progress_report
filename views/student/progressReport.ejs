@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="="en">
+<html lang="=" en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -14,12 +15,14 @@
       background-color: #f5f6fa;
       padding: 30px;
     }
+
     .report-card {
       background: white;
       border-radius: 10px;
       padding: 30px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
+
     .section-title {
       font-weight: 600;
       font-size: 20px;
@@ -28,151 +31,209 @@
       margin-top: 30px;
       margin-bottom: 15px;
     }
+
     .date-input {
       width: 120px;
       text-align: center;
     }
+
     .no-print {
       display: inline-block;
     }
+
     @media print {
       .no-print {
         display: none !important;
       }
+
       body {
         padding: 0;
       }
     }
   </style>
 </head>
+
 <body>
-<div class="container report-card">
+  <div class="container report-card">
 
-  <!-- Header / Title -->
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-  <div>
-    <h2 class="fw-bold text-primary mb-3">📘 Student Progress Report</h2>
+    <!-- Header / Title -->
+    <div
+      class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+      <div>
+        <h2 class="fw-bold text-primary mb-3">📘 Student Progress Report</h2>
 
-    <div class="row gy-1">
-      <div class="col-12 col-md-6">
-        <strong>Name:</strong> <%= student.name %>
+        <div class="row gy-1">
+          <div class="col-12 col-md-6">
+            <strong>Name:</strong>
+            <%= student.name %>
+          </div>
+          <div class="col-12 col-md-6">
+            <strong>Contact:</strong>
+            <%= student.contact %>
+          </div>
+          <div class="col-12 col-md-6">
+            <strong>Course:</strong>
+            <%= course.name %>
+          </div>
+          <div class="col-12 col-md-6">
+            <strong>Faculty:</strong>
+            <%= student.facultyName %>
+          </div>
+          <div class="col-12 col-md-6">
+            <strong>Start Date:</strong>
+            <%= student.startDate %>
+          </div>
+          <div class="col-12 col-md-6">
+            <strong>End Date:</strong>
+            <%= student.endDate %>
+          </div>
+        </div>
       </div>
-      <div class="col-12 col-md-6">
-        <strong>Contact:</strong> <%= student.contact %>
+
+      <!-- Reg No + Buttons Section -->
+      <div class="no-print d-flex flex-column align-items-md-end gap-2 mt-3 mt-md-0">
+        <div><strong>Reg No:</strong>
+          <%= student.regNo %>
+        </div>
+        <a href="/report/<%= student._id %>/pdf" class="btn btn-outline-success d-flex align-items-center gap-1">
+          <i class="bi bi-file-earmark-pdf"></i> Download PDF
+        </a>
+        <button onclick="window.print()" class="btn btn-outline-primary d-flex align-items-center gap-1">
+          <i class="bi bi-printer"></i> Print
+        </button>
       </div>
-      <div class="col-12 col-md-6">
-        <strong>Course:</strong> <%= course.name %>
-      </div>
-      <div class="col-12 col-md-6">
-        <strong>Faculty:</strong> <%= student.facultyName %>
-      </div>
-      <div class="col-12 col-md-6">
-        <strong>Start Date:</strong> <%= student.startDate %>
-      </div>
-      <div class="col-12 col-md-6">
-        <strong>End Date:</strong> <%= student.endDate %>
-      </div>
+    </div>
+
+
+    <!-- Topic Table -->
+    <div class="section-title">📚 Topics Covered</div>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped align-middle text-center">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>✔</th>
+            <th>Topic</th>
+            <th>Date</th>
+            <th>Signature</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% report.topics.forEach((topic, i)=> { %>
+            <tr>
+              <td>
+                <%= i + 1 %>
+              </td>
+              <td>
+                <input type="checkbox" class="form-check-input topic-check" data-index="<%= i %>" <%=topic.isChecked
+                  ? 'checked' : '' %>
+                <%= topic.isChecked ? 'disabled' : '' %> />
+              </td>
+              <td class="text-start">
+                <%= topic.topicTitle %>
+              </td>
+              <td align="center">
+                <input type="text" id="date-<%= i %>" class="form-control form-control-sm date-input"
+                  value="<%= topic.date %>" readonly placeholder="DD / MM / YYYY" <%=topic.isChecked ? 'disabled' : ''
+                  %>/>
+              </td>
+              <td><img id="signaturePreview" src="<%= student.signatureData %>" alt="Signature Preview"
+                  style="max-width: 70px; margin-top: 10px; <%= topic.isChecked ? '' : 'display: none;' %>" /></td>
+            </tr>
+            <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-end mt-4">
+      <p><strong>Faculty:</strong>
+        <%= student.facultyName %>
+      </p>
+      <p><em>Generated on: <%= new Date().toLocaleDateString('en-IN') %></em></p>
     </div>
   </div>
 
-  <!-- Reg No + Buttons Section -->
-  <div class="no-print d-flex flex-column align-items-md-end gap-2 mt-3 mt-md-0">
-    <div><strong>Reg No:</strong> <%= student.regNo %></div>
-    <a href="/report/<%= student._id %>/pdf" class="btn btn-outline-success d-flex align-items-center gap-1">
-      <i class="bi bi-file-earmark-pdf"></i> Download PDF
-    </a>
-    <button onclick="window.print()" class="btn btn-outline-primary d-flex align-items-center gap-1">
-      <i class="bi bi-printer"></i> Print
-    </button>
-  </div>
-</div>
+  <!-- JS: Checkbox Date Auto-Fill -->
+  <script>
+    const reportId = "<%= report._id %>";
 
+    // Get today's date in DD/MM/YYYY format
+    function getCurrentDate() {
+      const d = new Date();
+      return d.toLocaleDateString('en-GB').split('/').map(n => n.padStart(2, '0')).join('/');
+    }
 
-  <!-- Topic Table -->
-  <div class="section-title">📚 Topics Covered</div>
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped align-middle text-center">
-      <thead class="table-light">
-        <tr>
-          <th>#</th>
-          <th>✔</th>
-          <th>Topic</th>
-          <th>Date</th>
-          <th>Signature</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% report.topics.forEach((topic, i) => { %>
-          <tr>
-            <td><%= i + 1 %></td>
-            <td>
-              <input type="checkbox" class="form-check-input topic-check"
-                     data-index="<%= i %>" <%= topic.isChecked ? 'checked' : '' %> <%= topic.isChecked ? 'disabled' : '' %> />
-            </td>
-            <td class="text-start"><%= topic.topicTitle %></td>
-            <td align="center">
-              <input type="text" id="date-<%= i %>" class="form-control form-control-sm date-input"
-                     value="<%= topic.date %>" readonly placeholder="DD / MM / YYYY" <%= topic.isChecked ? 'disabled' : '' %>/>
-            </td>
-            <td><img id="signaturePreview" src="<%= student.signatureData %>" alt="Signature Preview" style="max-width: 70px; margin-top: 10px; <%= topic.isChecked ? '' : 'display: none;' %>" /></td>
-          </tr>
-        <% }); %>
-      </tbody>
-    </table>
-  </div>
+    // Add event listeners to all checkboxes
+    document.querySelectorAll('.topic-check').forEach(cb => {
+      cb.addEventListener('click', async function (e) {
+        const i = this.dataset.index;
+        const isChecked = this.checked;
 
-  <!-- Footer -->
-  <div class="text-end mt-4">
-    <p><strong>Faculty:</strong> <%= student.facultyName %></p>
-    <p><em>Generated on: <%= new Date().toLocaleDateString('en-IN') %></em></p>
-  </div>
-</div>
+        // Prevent checkbox from auto-toggling
+        e.preventDefault();
 
-<!-- JS: Checkbox Date Auto-Fill -->
-<script>
-  const reportId = "<%= report._id %>";
+        if (isChecked) {
+          // Trying to check it
+          if (confirm("જો તમને આ નો TOPIC સમજાય ગયો હોય તો જ Confirm પર click કરવું ")) {
+            const date = getCurrentDate();
+            document.getElementById(`date-${i}`).value = date;
 
-  // Get today's date in DD/MM/YYYY format
-  function getCurrentDate() {
-    const d = new Date();
-    return d.toLocaleDateString('en-GB').split('/').map(n => n.padStart(2, '0')).join('/');
-  }
+            // Update to server
+            try {
+              const response = await fetch('/report/update-topic', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  reportId: reportId,
+                  topicIndex: i,
+                  isChecked: true,
+                  date: date
+                })
+              });
 
-  // Add event listeners to all checkboxes
-  document.querySelectorAll('.topic-check').forEach(cb => {
-    cb.addEventListener('change', async function () {
-      const i = this.dataset.index;
-      const isChecked = this.checked;
-      const date = isChecked ? getCurrentDate() : '';
-
-      // Set the value in the date input field
-      document.getElementById(`date-${i}`).value = date;
-
-      // Send the update to the server
-      try {
-        const response = await fetch('/report/update-topic', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            reportId: reportId,
-            topicIndex: i,
-            isChecked: isChecked,
-            date: date
-          })
-        });
-
-        if (response.ok) {
-          location.reload();
+              if (response.ok) {
+                location.reload();
+              } else {
+                alert("❌ Failed to update progress. Please try again.");
+              }
+            } catch (error) {
+              alert("🚫 Server error: " + error.message);
+            }
+          }
         } else {
-          alert("❌ Failed to update progress. Please try again.");
+          // Optional: Allow unchecking with confirmation
+          if (confirm("શું તમે આ TOPIC ને ફરીથી અધૂરું માનતા છો?")) {
+            document.getElementById(`date-${i}`).value = "";
+
+            try {
+              const response = await fetch('/report/update-topic', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  reportId: reportId,
+                  topicIndex: i,
+                  isChecked: false,
+                  date: ""
+                })
+              });
+
+              if (response.ok) {
+                location.reload();
+              } else {
+                alert("❌ Failed to update progress. Please try again.");
+              }
+            } catch (error) {
+              alert("🚫 Server error: " + error.message);
+            }
+          }
         }
-      } catch (error) {
-        alert("🚫 Server error: " + error.message);
-      }
+      });
     });
-  });
-</script>
+
+  </script>
 
 
 </body>
+
 </html>
