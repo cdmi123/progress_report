@@ -49,7 +49,7 @@ router.get('/admin/student/add', async (req, res) => {
 
 // Save new student
 router.post('/admin/student/add', async (req, res) => {
-  const { name, contact, regNo, facultyName, startDate, endDate, courses , password } = req.body;
+  const { name, contact, regNo, facultyName, startDate, endDate, courses , password , email} = req.body;
 
   const student = await Student.create({
     name,
@@ -60,7 +60,8 @@ router.post('/admin/student/add', async (req, res) => {
     endDate,
     courses: Array.isArray(courses) ? courses : [courses], // ✅ support single & multiple
     password,
-    signatureData: req.body.signatureData
+    signatureData: req.body.signatureData,
+    email
   });
 
   // Create a report for each selected course
