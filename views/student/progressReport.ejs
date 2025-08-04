@@ -1,184 +1,628 @@
 <!DOCTYPE html>
-<html lang="=" en">
-
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Student Progress Report</title>
-
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
   <style>
+    :root {
+      --primary: #6366f1;
+      --secondary: #8b5cf6;
+      --accent: #ec4899;
+      --dark: #1e293b;
+      --light: #f1f5f9;
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
-      background-color: #f5f6fa;
-      padding: 30px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px 0;
+      color: var(--dark);
     }
-
-    .report-card {
+    
+    .report-wrapper {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .report-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      backdrop-filter: blur(10px);
+    }
+    
+    .report-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .report-header::before {
+      content: "";
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .report-header::after {
+      content: "";
+      position: absolute;
+      bottom: -30px;
+      left: -30px;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .report-title {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .report-subtitle {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.1rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .student-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 30px 40px;
+      background: var(--light);
+    }
+    
+    .info-card {
       background: white;
-      border-radius: 10px;
-      padding: 30px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-
-    .section-title {
+    
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-label {
+      font-size: 0.875rem;
+      color: #64748b;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .info-label i {
+      margin-right: 8px;
+      color: var(--primary);
+    }
+    
+    .info-value {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    
+    .actions {
+      padding: 30px 40px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+    }
+    
+    .btn-action {
+      padding: 12px 24px;
+      border-radius: 12px;
       font-weight: 600;
-      font-size: 20px;
-      border-bottom: 2px solid #0d6efd;
-      padding-bottom: 6px;
-      margin-top: 30px;
-      margin-bottom: 15px;
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      transition: all 0.3s;
     }
-
+    
+    .btn-pdf {
+      background: linear-gradient(135deg, var(--success), #059669);
+      color: white;
+    }
+    
+    .btn-pdf:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+      color: white;
+    }
+    
+    .btn-print {
+      background: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+    
+    .btn-print:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+    }
+    
+    .btn-action i {
+      margin-right: 8px;
+    }
+    
+    .topics-section {
+      padding: 0 40px 30px;
+    }
+    
+    .section-heading {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 20px;
+      position: relative;
+      padding-left: 20px;
+    }
+    
+    .section-heading::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 70%;
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+      border-radius: 3px;
+    }
+    
+    .topics-table {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    
+    .table-custom {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    
+    .table-custom thead th {
+      background: var(--light);
+      color: var(--dark);
+      font-weight: 700;
+      padding: 18px 15px;
+      text-align: center;
+      border: none;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .table-custom tbody tr {
+      border-bottom: 1px solid #e2e8f0;
+      transition: background-color 0.2s;
+    }
+    
+    .table-custom tbody tr:last-child {
+      border-bottom: none;
+    }
+    
+    .table-custom tbody tr:hover {
+      background-color: rgba(99, 102, 241, 0.03);
+    }
+    
+    .table-custom td {
+      padding: 18px 15px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    
+    .topic-name {
+      text-align: left;
+      font-weight: 500;
+    }
+    
+    .topic-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+    
     .date-input {
       width: 120px;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
       text-align: center;
+      font-size: 0.875rem;
     }
-
+    
+    .signature-img {
+      max-width: 70px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .report-footer {
+      background: var(--light);
+      padding: 25px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .footer-info p {
+      margin: 0;
+      font-size: 0.875rem;
+    }
+    
+    .footer-info strong {
+      color: var(--dark);
+    }
+    
+    .footer-date {
+      color: #64748b;
+      font-style: italic;
+    }
+    
     .no-print {
       display: inline-block;
     }
-
+    
+    /* Print Styles - A4 Paper Size */
     @media print {
+      @page {
+        size: A4;
+        margin: 1cm;
+      }
+      
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .report-wrapper {
+        max-width: 100%;
+        padding: 0;
+      }
+      
+      .report-container {
+        box-shadow: none;
+        border-radius: 0;
+        overflow: visible;
+      }
+      
+      .report-header {
+        background: var(--primary) !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+        padding: 20px;
+        position: relative;
+      }
+      
+      .report-header::before,
+      .report-header::after {
+        display: none;
+      }
+      
+      .report-title {
+        font-size: 1.8rem;
+        margin-bottom: 5px;
+      }
+      
+      .report-subtitle {
+        font-size: 0.9rem;
+      }
+      
+      .student-info {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        padding: 20px;
+        background: white;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      
+      .info-card {
+        background: white;
+        box-shadow: none;
+        padding: 10px;
+        border-radius: 0;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      
+      .info-card:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      
+      .info-label {
+        font-size: 0.75rem;
+        margin-bottom: 2px;
+      }
+      
+      .info-value {
+        font-size: 0.9rem;
+      }
+      
+      .actions {
+        display: none;
+      }
+      
+      .topics-section {
+        padding: 20px;
+      }
+      
+      .section-heading {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+      }
+      
+      .topics-table {
+        box-shadow: none;
+        border-radius: 0;
+        border: 1px solid #e2e8f0;
+      }
+      
+      .table-custom {
+        font-size: 0.8rem;
+      }
+      
+      .table-custom thead th {
+        padding: 10px 8px;
+        font-size: 0.75rem;
+        background: #f8fafc;
+      }
+      
+      .table-custom td {
+        padding: 10px 8px;
+      }
+      
+      .date-input {
+        width: 80px;
+        padding: 4px 8px;
+        font-size: 0.75rem;
+        border: 1px solid #d1d5db;
+      }
+      
+      .signature-img {
+        max-width: 50px;
+      }
+      
+      .report-footer {
+        background: white;
+        padding: 15px 20px;
+        border-top: 1px solid #e2e8f0;
+      }
+      
+      .footer-info p {
+        font-size: 0.75rem;
+      }
+      
+      .footer-date {
+        font-size: 0.7rem;
+      }
+      
       .no-print {
         display: none !important;
       }
-
-      body {
-        padding: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .report-title {
+        font-size: 2rem;
+      }
+      
+      .student-info {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+      
+      .actions {
+        padding: 20px;
+        justify-content: center;
+      }
+      
+      .topics-section {
+        padding: 0 20px 20px;
+      }
+      
+      .section-heading {
+        font-size: 1.25rem;
+      }
+      
+      .table-custom {
+        font-size: 0.875rem;
+      }
+      
+      .table-custom thead th,
+      .table-custom td {
+        padding: 12px 8px;
+      }
+      
+      .date-input {
+        width: 100px;
+      }
+      
+      .signature-img {
+        max-width: 50px;
+      }
+      
+      .report-footer {
+        padding: 20px;
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
 </head>
-
 <body>
-  <div class="container report-card">
-
-    <!-- Header / Title -->
-    <div
-      class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-      <div>
-        <h2 class="fw-bold text-primary mb-3">📘 Student Progress Report</h2>
-
-        <div class="row gy-1">
-          <div class="col-12 col-md-6">
-            <strong>Name:</strong>
-            <%= student.name %>
+  <div class="report-wrapper">
+    <div class="report-container" id="printableArea">
+      <!-- Header -->
+      <div class="report-header">
+        <h1 class="report-title">Progress Report</h1>
+        <p class="report-subtitle">Academic Performance Tracking</p>
+      </div>
+      
+      <!-- Student Information -->
+      <div class="student-info">
+        <div class="info-card">
+          <div class="info-label">
+            <i class="bi bi-person-fill"></i> Student Name
           </div>
-          <div class="col-12 col-md-6">
-            <strong>Contact:</strong>
-            <%= student.contact %>
+          <div class="info-value"><%= student.name %></div>
+        </div>
+        
+        <div class="info-card">
+          <div class="info-label">
+            <i class="bi bi-hash"></i> Registration No.
           </div>
-          <div class="col-12 col-md-6">
-            <strong>Course:</strong>
-            <%= course.name %>
+          <div class="info-value"><%= student.regNo %></div>
+        </div>
+        
+        <div class="info-card">
+          <div class="info-label">
+            <i class="bi bi-telephone-fill"></i> Contact
           </div>
-          <div class="col-12 col-md-6">
-            <strong>Faculty:</strong>
-            <%= student.facultyName %>
+          <div class="info-value"><%= student.contact %></div>
+        </div>
+        
+        <div class="info-card">
+          <div class="info-label">
+            <i class="bi bi-book"></i> Course
           </div>
-          <div class="col-12 col-md-6">
-            <strong>Start Date:</strong>
-            <%= student.startDate %>
+          <div class="info-value"><%= course.name %></div>
+        </div>
+        
+        <div class="info-card">
+          <div class="info-label">
+            <i class="bi bi-building"></i> Faculty
           </div>
-          <div class="col-12 col-md-6">
-            <strong>End Date:</strong>
-            <%= student.endDate %>
+          <div class="info-value"><%= student.facultyName %></div>
+        </div>
+        
+        <div class="info-card">
+          <div class="info-label">
+            <i class="bi bi-calendar-range"></i> Duration
           </div>
+          <div class="info-value"><%= student.startDate %> - <%= student.endDate %></div>
         </div>
       </div>
-
-      <!-- Reg No + Buttons Section -->
-      <div class="no-print d-flex flex-column align-items-md-end gap-2 mt-3 mt-md-0">
-        <div><strong>Reg No:</strong>
-          <%= student.regNo %>
-        </div>
-        <a href="/report/<%= student._id %>/pdf" class="btn btn-outline-success d-flex align-items-center gap-1">
+      
+      <!-- Action Buttons -->
+      <div class="actions no-print">
+        <a href="/report/<%= student._id %>/pdf" class="btn-action btn-pdf">
           <i class="bi bi-file-earmark-pdf"></i> Download PDF
         </a>
-        <button onclick="window.print()" class="btn btn-outline-primary d-flex align-items-center gap-1">
-          <i class="bi bi-printer"></i> Print
+        <button onclick="printReport()" class="btn-action btn-print">
+          <i class="bi bi-printer"></i> Print Report
         </button>
       </div>
-    </div>
-
-
-    <!-- Topic Table -->
-    <div class="section-title">📚 Topics Covered</div>
-    <div class="table-responsive">
-      <table class="table table-bordered table-striped align-middle text-center">
-        <thead class="table-light">
-          <tr>
-            <th>#</th>
-            <th>✔</th>
-            <th>Topic</th>
-            <th>Date</th>
-            <th>Signature</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% report.topics.forEach((topic, i)=> { %>
-            <tr>
-              <td>
-                <%= i + 1 %>
-              </td>
-              <td>
-                <input type="checkbox" class="form-check-input topic-check" data-index="<%= i %>" <%=topic.isChecked
-                  ? 'checked' : '' %>
-                <%= topic.isChecked ? 'disabled' : '' %> />
-              </td>
-              <td class="text-start">
-                <%= topic.topicTitle %>
-              </td>
-              <td align="center">
-                <input type="text" id="date-<%= i %>" class="form-control form-control-sm date-input"
-                  value="<%= topic.date %>" readonly placeholder="DD / MM / YYYY" <%=topic.isChecked ? 'disabled' : ''
-                  %>/>
-              </td>
-              <td><img id="signaturePreview" src="<%= student.signatureData %>" alt="Signature Preview"
-                  style="max-width: 70px; margin-top: 10px; <%= topic.isChecked ? '' : 'display: none;' %>" /></td>
-            </tr>
-            <% }); %>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Footer -->
-    <div class="text-end mt-4">
-      <p><strong>Faculty:</strong>
-        <%= student.facultyName %>
-      </p>
-      <p><em>Generated on: <%= new Date().toLocaleDateString('en-IN') %></em></p>
+      
+      <!-- Topics Section -->
+      <div class="topics-section">
+        <h3 class="section-heading">Topics Covered</h3>
+        
+        <div class="topics-table">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th width="5%">#</th>
+                <th width="10%">Status</th>
+                <th width="45%">Topic</th>
+                <th width="20%">Date</th>
+                <th width="20%">Signature</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% report.topics.forEach((topic, i)=> { %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td>
+                    <input type="checkbox" class="topic-checkbox" data-index="<%= i %>" <%=topic.isChecked ? 'checked' : '' %> <%= topic.isChecked ? 'disabled' : '' %> />
+                  </td>
+                  <td class="topic-name"><%= topic.topicTitle %></td>
+                  <td>
+                    <input type="text" id="date-<%= i %>" class="date-input" value="<%= topic.date %>" readonly placeholder="DD/MM/YYYY" <%=topic.isChecked ? 'disabled' : '' %>/>
+                  </td>
+                  <td>
+                    <img id="signaturePreview" src="<%= student.signatureData %>" alt="Signature" class="signature-img" style="<%= topic.isChecked ? '' : 'display: none;' %>" />
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div class="report-footer">
+        <div class="footer-info">
+          <p><strong>Faculty:</strong> <%= student.facultyName %></p>
+          <p class="footer-date">Generated on: <%= new Date().toLocaleDateString('en-IN') %></p>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- JS: Checkbox Date Auto-Fill -->
   <script>
     const reportId = "<%= report._id %>";
-
     // Get today's date in DD/MM/YYYY format
     function getCurrentDate() {
       const d = new Date();
       return d.toLocaleDateString('en-GB').split('/').map(n => n.padStart(2, '0')).join('/');
     }
-
+    
+    // Print Report Function
+    function printReport() {
+      window.print();
+    }
+    
     // Add event listeners to all checkboxes
-    document.querySelectorAll('.topic-check').forEach(cb => {
+    document.querySelectorAll('.topic-checkbox').forEach(cb => {
       cb.addEventListener('click', async function (e) {
         const i = this.dataset.index;
         const isChecked = this.checked;
-
         // Prevent checkbox from auto-toggling
         e.preventDefault();
-
         if (isChecked) {
           // Trying to check it
           if (confirm("જો તમને આ નો TOPIC સમજાય ગયો હોય તો જ Confirm પર click કરવું ")) {
             const date = getCurrentDate();
             document.getElementById(`date-${i}`).value = date;
-
             // Update to server
             try {
               const response = await fetch('/report/update-topic', {
@@ -191,7 +635,6 @@
                   date: date
                 })
               });
-
               if (response.ok) {
                 location.reload();
               } else {
@@ -205,7 +648,6 @@
           // Optional: Allow unchecking with confirmation
           if (confirm("શું તમે આ TOPIC ને ફરીથી અધૂરું માનતા છો?")) {
             document.getElementById(`date-${i}`).value = "";
-
             try {
               const response = await fetch('/report/update-topic', {
                 method: 'POST',
@@ -217,7 +659,6 @@
                   date: ""
                 })
               });
-
               if (response.ok) {
                 location.reload();
               } else {
@@ -230,10 +671,6 @@
         }
       });
     });
-
   </script>
-
-
 </body>
-
 </html>

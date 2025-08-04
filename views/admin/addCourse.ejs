@@ -1,39 +1,196 @@
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="fw-bold text-primary">📘 Add New Course</h2>
-  <a href="/admin/dashboard" class="btn btn-outline-dark">
-    <i class="bi bi-speedometer2"></i> Back to Dashboard
-  </a>
+<div class="container-fluid py-4">
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h2 class="fw-bold text-primary">
+        <i class="bi bi-book me-2"></i> Add New Course
+      </h2>
+      <p class="text-muted mb-0">Create a new course with topics and details</p>
+    </div>
+    <a href="/admin/dashboard" class="btn btn-outline-primary d-flex align-items-center">
+      <i class="bi bi-speedometer2 me-2"></i> Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Form Card -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-0 py-2">
+      <h5 class="card-title mb-0">
+        <i class="bi bi-journal-text me-2 text-primary"></i> Course Information
+      </h5>
+    </div>
+    <div class="card-body py-3">
+      <form method="POST" action="/admin/course/add" id="courseForm">
+        <div class="row g-2">
+          <div class="col-12">
+            <div class="form-floating mb-2">
+              <input type="text" name="name" class="form-control" id="courseName" placeholder="Course Name" required>
+              <label for="courseName">
+                <i class="bi bi-book-half me-1"></i> Course Name
+              </label>
+            </div>
+          </div>
+          
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label class="form-label fw-semibold mb-0">
+                <i class="bi bi-list-ul me-1"></i> Topics
+              </label>
+              <button type="button" class="btn btn-sm btn-outline-primary" onclick="addTopic()">
+                <i class="bi bi-plus-circle me-1"></i> Add Topic
+              </button>
+            </div>
+            
+            <div id="topicsContainer" class="mb-2">
+              <div class="topic-item mb-2">
+                <div class="input-group">
+                  <span class="input-group-text bg-light">
+                    <i class="bi bi-hash"></i>
+                  </span>
+                  <input type="text" name="topics" class="form-control topic-input" placeholder="Enter topic name" required>
+                  <button type="button" class="btn btn-outline-danger" onclick="removeTopic(this)" title="Remove topic">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+          <a href="/admin/courses" class="btn btn-outline-secondary">
+            <i class="bi bi-journal-album me-2"></i> View All Courses
+          </a>
+          
+          <div>
+            <button type="reset" class="btn btn-outline-secondary me-2">
+              <i class="bi bi-arrow-clockwise me-2"></i> Reset Form
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-circle me-2"></i> Add Course
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
-<div class="card shadow-sm">
-  <div class="card-body">
-    <form method="POST" action="/admin/course/add">
-      <div class="mb-3">
-        <label class="form-label">Course Name</label>
-        <input name="name" class="form-control" required />
-      </div>
-
-      <label class="form-label">Topics</label>
-      <div id="topics">
-        <div class="input-group mb-2">
-          <input type="text" name="topics" class="form-control" required />
-          <button type="button" class="btn btn-outline-secondary" onclick="addTopic()">+</button>
-        </div>
-      </div>
-
-      <button class="btn btn-success"><i class="bi bi-plus-square"></i> Add Course</button>
-      <a href="/admin/courses" class="btn btn-outline-secondary">View Courses</a>
-    </form>
+<!-- Toast Notification Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <i class="bi bi-info-circle-fill text-primary me-2"></i>
+      <strong class="me-auto">Notification</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      Course added successfully!
+    </div>
   </div>
 </div>
 
 <script>
+  // Function to add a new topic input
   function addTopic() {
-    const div = document.createElement('div');
-    div.className = 'input-group mb-2';
-    div.innerHTML = `
-      <input type="text" name="topics" class="form-control" required />
-      <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()">−</button>`;
-    document.getElementById('topics').appendChild(div);
+    const topicsContainer = document.getElementById('topicsContainer');
+    const topicCount = topicsContainer.children.length;
+    
+    const topicDiv = document.createElement('div');
+    topicDiv.className = 'topic-item mb-2';
+    topicDiv.innerHTML = `
+      <div class="input-group">
+        <span class="input-group-text bg-light">
+          <i class="bi bi-hash"></i>
+        </span>
+        <input type="text" name="topics" class="form-control topic-input" placeholder="Enter topic name" required>
+        <button type="button" class="btn btn-outline-danger" onclick="removeTopic(this)" title="Remove topic">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    `;
+    
+    topicsContainer.appendChild(topicDiv);
+    
+    // Focus on the new input
+    const newInput = topicDiv.querySelector('.topic-input');
+    newInput.focus();
+    
+    // Show notification
+    showNotification('New topic field added', 'info');
   }
+  
+  // Function to remove a topic input
+  function removeTopic(button) {
+    const topicItem = button.closest('.topic-item');
+    const topicsContainer = document.getElementById('topicsContainer');
+    
+    // Don't remove if it's the last one
+    if (topicsContainer.children.length <= 1) {
+      showNotification('At least one topic is required', 'warning');
+      return;
+    }
+    
+    topicItem.remove();
+    showNotification('Topic removed', 'info');
+  }
+  
+  // Function to show notifications
+  function showNotification(message, type = 'info') {
+    const toastEl = document.getElementById('notificationToast');
+    const toast = new bootstrap.Toast(toastEl);
+    
+    // Update toast content based on type
+    const toastHeader = toastEl.querySelector('.toast-header');
+    const toastBody = toastEl.querySelector('.toast-body');
+    
+    // Reset classes
+    toastHeader.className = 'toast-header';
+    
+    // Set icon and color based on type
+    let icon = 'bi-info-circle-fill';
+    let iconColor = 'text-primary';
+    
+    if (type === 'success') {
+      icon = 'bi-check-circle-fill';
+      iconColor = 'text-success';
+    } else if (type === 'warning') {
+      icon = 'bi-exclamation-triangle-fill';
+      iconColor = 'text-warning';
+    } else if (type === 'danger') {
+      icon = 'bi-x-circle-fill';
+      iconColor = 'text-danger';
+    }
+    
+    toastHeader.innerHTML = `
+      <i class="bi ${icon} ${iconColor} me-2"></i>
+      <strong class="me-auto">Notification</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    `;
+    
+    toastBody.textContent = message;
+    
+    // Show the toast
+    toast.show();
+  }
+  
+  // Form submission validation
+  document.getElementById('courseForm').addEventListener('submit', function(e) {
+    const topicInputs = document.querySelectorAll('.topic-input');
+    let hasEmptyTopic = false;
+    
+    topicInputs.forEach(input => {
+      if (input.value.trim() === '') {
+        hasEmptyTopic = true;
+        input.classList.add('is-invalid');
+      } else {
+        input.classList.remove('is-invalid');
+      }
+    });
+    
+    if (hasEmptyTopic) {
+      e.preventDefault();
+      showNotification('Please fill in all topic fields', 'warning');
+    }
+  });
 </script>

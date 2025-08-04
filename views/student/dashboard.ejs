@@ -1,128 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Student Dashboard</title>
-
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
-
   <style>
+    :root {
+      --primary-color: #5e72e4;
+      --secondary-color: #825ee4;
+      --success-color: #2dce89;
+      --info-color: #11cdef;
+      --warning-color: #fb6340;
+      --danger-color: #f5365c;
+      --light-color: #f8f9fe;
+      --dark-color: #32325d;
+    }
+    
     body {
-      background: linear-gradient(to right, #dfe9f3, #ffffff);
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      color: var(--dark-color);
     }
-
-    .glass-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-      transition: 0.3s ease-in-out;
+    
+    .dashboard-container {
+      padding: 2rem 0;
     }
-
-    .glass-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    
+    .dashboard-header {
+      text-align: center;
+      margin-bottom: 3rem;
     }
-
-    .section-title {
+    
+    .dashboard-title {
       font-weight: 700;
-      color: #0d6efd;
+      color: var(--primary-color);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .dashboard-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 2px;
+    }
+    
+    .profile-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .profile-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+    
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+    
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
       font-size: 2rem;
+      margin-right: 1.5rem;
+      box-shadow: 0 5px 15px rgba(94, 114, 228, 0.3);
     }
-
-    .info-label {
-      font-weight: 600;
-      color: #333;
+    
+    .profile-info h2 {
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      color: var(--dark-color);
     }
-
+    
+    .profile-info p {
+      color: #8898aa;
+      margin-bottom: 0;
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .info-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      border-radius: 12px;
+      background-color: var(--light-color);
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    
+    .info-item:hover {
+      transform: translateY(-3px);
+      background-color: #f0f4ff;
+    }
+    
     .info-icon {
-      color: #0d6efd;
-      margin-right: 10px;
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-size: 1.5rem;
     }
-
-    .info-box {
-      padding: 8px 0;
+    
+    .icon-primary {
+      background-color: rgba(94, 114, 228, 0.1);
+      color: var(--primary-color);
     }
-
-    .btn-glass {
-      border-radius: 0.5rem;
+    
+    .icon-info {
+      background-color: rgba(17, 205, 239, 0.1);
+      color: var(--info-color);
+    }
+    
+    .icon-success {
+      background-color: rgba(45, 206, 137, 0.1);
+      color: var(--success-color);
+    }
+    
+    .info-text {
+      flex: 1;
+    }
+    
+    .info-label {
+      font-size: 0.85rem;
+      color: #8898aa;
+      margin-bottom: 0.25rem;
+    }
+    
+    .info-value {
       font-weight: 600;
-      transition: all 0.3s;
+      color: var(--dark-color);
     }
-
-    .btn-glass:hover {
-      background-color: #0d6efd;
+    
+    .reports-section {
+      margin-top: 3rem;
+    }
+    
+    .section-heading {
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      position: relative;
+      padding-left: 15px;
+    }
+    
+    .section-heading::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 5px;
+      height: 70%;
+      background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+      border-radius: 3px;
+    }
+    
+    .reports-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .report-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .report-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    
+    .report-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .report-card:hover::after {
+      transform: scaleX(1);
+    }
+    
+    .report-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .report-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      margin-right: 1rem;
+      box-shadow: 0 5px 15px rgba(94, 114, 228, 0.25);
+    }
+    
+    .report-title {
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-bottom: 0;
+      font-size: 1.1rem;
+    }
+    
+    .report-details {
+      margin-bottom: 1.5rem;
+    }
+    
+    .report-detail {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      color: #8898aa;
+      font-size: 0.9rem;
+    }
+    
+    .report-detail i {
+      margin-right: 0.5rem;
+      color: var(--primary-color);
+    }
+    
+    .report-action {
+      margin-top: auto;
+    }
+    
+    .btn-report {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    
+    .btn-report:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(94, 114, 228, 0.4);
       color: white;
     }
-
+    
+    .btn-report i {
+      margin-right: 0.5rem;
+    }
+    
     @media (max-width: 768px) {
-      .info-box {
-        text-align: center;
-        flex-direction: column;
+      .dashboard-title {
+        font-size: 2rem;
       }
-
-      .info-icon {
-        margin-bottom: 4px;
+      
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .profile-avatar {
+        margin-right: 0;
+        margin-bottom: 1rem;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .reports-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
-
 <body>
-  <div class="container py-5">
-    <h2 class="text-center mb-5 section-title">
-      <i class="bi bi-person-circle me-2"></i>Student Dashboard
-    </h2>
-
+  <div class="container dashboard-container">
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">
+        <i class="bi bi-mortarboard-fill me-2"></i>Student Dashboard
+      </h1>
+    </div>
+    
     <!-- Student Info Card -->
-    <div class="glass-card p-4 mb-5">
-      <h4 class="text-center mb-4 text-dark fw-bold">
-        <i class="bi bi-person-check-fill me-2 text-primary"></i>Welcome, <%= student.name %>
-      </h4>
-
-      <div class="row text-center text-md-start">
-        <div class="col-md-4 info-box d-flex align-items-center justify-content-center justify-content-md-start">
-          <i class="bi bi-card-text fs-4 info-icon"></i>
-          <span class="info-label">Reg. No:</span>&nbsp;<%= student.regNo %>
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <i class="bi bi-person-fill"></i>
         </div>
-        <div class="col-md-4 info-box d-flex align-items-center justify-content-center justify-content-md-start">
-          <i class="bi bi-telephone-fill fs-4 info-icon"></i>
-          <span class="info-label">Phone:</span>&nbsp;<%= student.contact %>
+        <div class="profile-info">
+          <h2>Welcome, <%= student.name %></h2>
+          <p>Student Portal</p>
         </div>
-        <div class="col-md-4 info-box d-flex align-items-center justify-content-center justify-content-md-start">
-          <i class="bi bi-person-video3 fs-4 info-icon"></i>
-          <span class="info-label">Faculty:</span>&nbsp;<%= student.facultyName %>
+      </div>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-icon icon-primary">
+            <i class="bi bi-card-text"></i>
+          </div>
+          <div class="info-text">
+            <div class="info-label">Registration Number</div>
+            <div class="info-value"><%= student.regNo %></div>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-icon icon-info">
+            <i class="bi bi-telephone-fill"></i>
+          </div>
+          <div class="info-text">
+            <div class="info-label">Contact Number</div>
+            <div class="info-value"><%= student.contact %></div>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-icon icon-success">
+            <i class="bi bi-building"></i>
+          </div>
+          <div class="info-text">
+            <div class="info-label">Faculty</div>
+            <div class="info-value"><%= student.facultyName %></div>
+          </div>
         </div>
       </div>
     </div>
-
+    
     <!-- Progress Reports -->
-    <div class="row g-4">
-      <% studentReports.forEach(report => { %>
-        <div class="col-md-6 col-lg-4">
-          <div class="glass-card h-100 p-4 d-flex flex-column">
-            <h5 class="fw-semibold text-primary mb-2">
-              <i class="bi bi-journal-code me-1"></i><%= report.course.name %>
-            </h5>
-            <p class="mb-1"><strong>Start Date:</strong> <%= student.startDate %></p>
-            <p class="mb-3"><strong>End Date:</strong> <%= student.endDate %></p>
-            <a href="/student/report/<%= report._id %>" class="btn btn-outline-primary mt-auto btn-glass">
-              <i class="bi bi-file-text me-1"></i>View Progress Report
-            </a>
+    <div class="reports-section">
+      <h3 class="section-heading">Your Courses & Reports</h3>
+      <div class="reports-grid">
+        <% studentReports.forEach(report => { %>
+          <div class="report-card">
+            <div class="report-header">
+              <div class="report-icon">
+                <i class="bi bi-journal-text"></i>
+              </div>
+              <h5 class="report-title"><%= report.course.name %></h5>
+            </div>
+            
+            <div class="report-details">
+              <div class="report-detail">
+                <i class="bi bi-calendar-event"></i>
+                <span>Start Date: <%= student.startDate %></span>
+              </div>
+              <div class="report-detail">
+                <i class="bi bi-calendar-check"></i>
+                <span>End Date: <%= student.endDate %></span>
+              </div>
+            </div>
+            
+            <div class="report-action">
+              <a href="/student/report/<%= report._id %>" class="btn btn-report">
+                <i class="bi bi-file-earmark-text"></i>
+                View Progress Report
+              </a>
+            </div>
           </div>
-        </div>
-      <% }) %>
+        <% }) %>
+      </div>
     </div>
   </div>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

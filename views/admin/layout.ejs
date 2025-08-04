@@ -4,125 +4,471 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel</title>
-  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css" rel="stylesheet">
   <style>
-    body {
-      background-color: #f8f9fa;
+    :root {
+      --sidebar-width: 260px;
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4cc9f0;
+      --sidebar-bg: #1a1d29;
+      --sidebar-hover: #252936;
+      --sidebar-active: #2d3142;
+      --text-light: #adb5bd;
+      --text-lighter: #e9ecef;
+      --header-bg: #ffffff;
+      --border-color: #e9ecef;
     }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fb;
+      color: #333;
+    }
+    
+    /* Sidebar Styles */
     .sidebar {
-      width: 250px;
-      height: 100vh;
-      background-color: #343a40;
-      color: white;
       position: fixed;
       top: 0;
       left: 0;
-      padding: 20px 0;
+      height: 100vh;
+      width: var(--sidebar-width);
+      background-color: var(--sidebar-bg);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      overflow-y: auto;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .sidebar.collapsed {
+      width: 80px;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .sidebar-logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      margin-right: 12px;
+    }
+    
+    .sidebar-logo-text {
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 700;
+      transition: opacity 0.3s;
+    }
+    
+    .sidebar.collapsed .sidebar-logo-text {
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    
+    .sidebar-toggle:hover {
+      color: var(--text-lighter);
+    }
+    
+    .sidebar-menu {
+      padding: 1rem 0;
+    }
+    
+    .sidebar-item {
+      position: relative;
+    }
+    
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      padding: 0.875rem 1.5rem;
+      color: var(--text-light);
+      text-decoration: none;
+      transition: all 0.3s;
+      border-left: 3px solid transparent;
+    }
+    
+    .sidebar-link:hover {
+      background-color: var(--sidebar-hover);
+      color: var(--text-lighter);
+    }
+    
+    .sidebar-link.active {
+      background-color: var(--sidebar-active);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+    
+    .sidebar-icon {
+      font-size: 1.25rem;
+      margin-right: 12px;
+      width: 24px;
+      text-align: center;
+    }
+    
+    .sidebar-text {
+      transition: opacity 0.3s;
+    }
+    
+    .sidebar.collapsed .sidebar-text {
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    /* Header Styles */
+    .header {
+      position: fixed;
+      top: 0;
+      left: var(--sidebar-width);
+      right: 0;
+      height: 70px;
+      background-color: var(--header-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      z-index: 999;
       transition: left 0.3s ease;
     }
-    .sidebar.collapsed {
-      left: -250px;
+    
+    .header.collapsed {
+      left: 80px;
     }
-    .sidebar a {
-      color: #ddd;
-      display: block;
-      padding: 10px 20px;
-      text-decoration: none;
+    
+    .header-search {
+      position: relative;
+      width: 300px;
     }
-    .sidebar a:hover, .sidebar a.active {
-      background-color: #495057;
-      color: white;
+    
+    .header-search input {
+      width: 100%;
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 30px;
+      background-color: #f8f9fa;
+      transition: all 0.3s;
     }
-    .main-content {
-      margin-left: 250px;
-      padding: 20px;
-      transition: margin-left 0.3s ease;
+    
+    .header-search input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
     }
-    .main-content.collapsed {
-      margin-left: 0;
-    }
-    .navbar {
-      margin-left: 250px;
-      transition: margin-left 0.3s ease;
-    }
-    .navbar.collapsed {
-      margin-left: 0;
-    }
-    .profile-dropdown {
+    
+    .header-search-icon {
       position: absolute;
-      right: 20px;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
     }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+    }
+    
+    .header-action {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 1rem;
+      background-color: #f8f9fa;
+      color: #6c757d;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .header-action:hover {
+      background-color: #e9ecef;
+      color: var(--primary-color);
+    }
+    
+    .header-notification-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: #f44336;
+      color: white;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .header-profile {
+      display: flex;
+      align-items: center;
+      margin-left: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .header-profile-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      margin-right: 0.75rem;
+    }
+    
+    .header-profile-info {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .header-profile-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .header-profile-role {
+      font-size: 0.75rem;
+      color: #6c757d;
+    }
+    
+    /* Main Content Styles */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      margin-top: 70px;
+      padding: 2rem;
+      min-height: calc(100vh - 70px);
+      transition: margin-left 0.3s ease;
+    }
+    
+    .main-content.collapsed {
+      margin-left: 80px;
+    }
+    
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+      font-size: 1.5rem;
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+      .header-search {
+        width: 200px;
+      }
+    }
+    
     @media (max-width: 768px) {
       .sidebar {
-        left: -250px;
-        z-index: 9999;
+        left: -260px;
       }
+      
       .sidebar.show {
         left: 0;
       }
-      .sidebar.hide {
-        left: -250px;
+      
+      .header {
+        left: 0;
       }
-      .navbar, .main-content {
+      
+      .main-content {
         margin-left: 0;
+      }
+      
+      .header-profile-info {
+        display: none;
+      }
+      
+      .mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   </style>
 </head>
 <body>
-
-  <div class="sidebar" id="sidebar">
-    <div class="d-flex justify-content-between align-content-center mb-3 px-3">
-      <h4 class="text-center mb-0">Admin Panel</h4>
-      <button class="bg-transparent text-white border-0 fs-4 me-1 d-block d-md-none" id="close_btn"><i class="bi bi-x-lg"></i></button>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+          <i class="bi bi-speedometer2"></i>
+        </div>
+        <span class="sidebar-logo-text">Admin Panel</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="bi bi-list"></i>
+      </button>
     </div>
-    <a href="/admin/dashboard" class="<%= activePage === 'dashboard' ? 'active' : '' %>"><i class="bi bi-speedometer2"></i> Dashboard</a>
-    <a href="/admin/students" class="<%= activePage === 'students' ? 'active' : '' %>"><i class="bi bi-people"></i> Students</a>
-    <a href="/admin/student/add" class="<%= activePage === 'addStudent' ? 'active' : '' %>"><i class="bi bi-person-plus"></i> Add Student</a>
-    <a href="/admin/course/add" class="<%= activePage === 'addCourse' ? 'active' : '' %>"><i class="bi bi-journal-plus"></i> Add Course</a>
-    <a href="/admin/report/all" class="<%= activePage === 'reports' ? 'active' : '' %>"><i class="bi bi-bar-chart"></i> Reports</a>
-    <a href="/admin/logout" class="text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
-  </div>
-
-  <nav class="navbar navbar-light bg-white shadow-sm d-flex justify-content-between align-items-center">
-    <div class="d-flex align-items-center">
-      <button class="btn btn-outline-secondary d-md-none ms-3" id="toggleSidebar"><i class="bi bi-list"></i></button>
-      <span class="navbar-brand mb-0 h5 ms-3">Welcome, Admin</span>
+    
+    <div class="sidebar-menu">
+      <div class="sidebar-item">
+        <a href="/admin/dashboard" class="sidebar-link <%= activePage === 'dashboard' ? 'active' : '' %>">
+          <i class="bi bi-speedometer2 sidebar-icon"></i>
+          <span class="sidebar-text">Dashboard</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="/admin/register" class="sidebar-link <%= activePage === 'staff' ? 'active' : '' %>">
+          <i class="bi bi-person sidebar-icon"></i>
+          <span class="sidebar-text">Add Staff</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="/admin/students" class="sidebar-link <%= activePage === 'students' ? 'active' : '' %>">
+          <i class="bi bi-people sidebar-icon"></i>
+          <span class="sidebar-text">Students</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="/admin/student/add" class="sidebar-link <%= activePage === 'addStudent' ? 'active' : '' %>">
+          <i class="bi bi-person-plus sidebar-icon"></i>
+          <span class="sidebar-text">Add Student</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="/admin/course/add" class="sidebar-link <%= activePage === 'addCourse' ? 'active' : '' %>">
+          <i class="bi bi-journal-plus sidebar-icon"></i>
+          <span class="sidebar-text">Add Course</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="/admin/report/all" class="sidebar-link <%= activePage === 'reports' ? 'active' : '' %>">
+          <i class="bi bi-bar-chart sidebar-icon"></i>
+          <span class="sidebar-text">Reports</span>
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="/admin/logout" class="sidebar-link text-danger">
+          <i class="bi bi-box-arrow-right sidebar-icon"></i>
+          <span class="sidebar-text">Logout</span>
+        </a>
+      </div>
     </div>
-    <div class="dropdown me-3">
-      <a class="btn btn-outline-dark dropdown-toggle" href="#" role="button" id="profileMenu" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-person-circle"></i>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
-        <li><a class="dropdown-item" href="#">Profile</a></li>
-        <li><a class="dropdown-item" href="#">Settings</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item text-danger" href="/admin/logout">Logout</a></li>
-      </ul>
+  </aside>
+  
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-search">
+      <i class="bi bi-search header-search-icon"></i>
+      <input type="text" placeholder="Search...">
     </div>
-  </nav>
-
+    
+    <div class="header-actions">
+      <div class="header-profile">
+        <div class="header-profile-img">A</div>
+        <div class="header-profile-info">
+          <span class="header-profile-name">Admin User</span>
+          <span class="header-profile-role">Administrator</span>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
   <main class="main-content" id="mainContent">
     <%- body %>
   </main>
-
+  
+  <!-- Mobile Menu Toggle -->
+  <button class="mobile-menu-toggle" id="mobileMenuToggle">
+    <i class="bi bi-list"></i>
+  </button>
 
   <script>
+    // Sidebar Toggle
     const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const header = document.getElementById('header');
     const mainContent = document.getElementById('mainContent');
-    const toggleBtn = document.getElementById('toggleSidebar');
-    const closeBtn = document.getElementById('close_btn');
-
-    toggleBtn.addEventListener('click', () => {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      header.classList.toggle('collapsed');
+      mainContent.classList.toggle('collapsed');
+    });
+    
+    // Mobile Menu Toggle
+    mobileMenuToggle.addEventListener('click', () => {
       sidebar.classList.toggle('show');
     });
-    closeBtn.addEventListener('click', () => {
-      sidebar.classList.remove('show').toggle('hide');
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (event) => {
+      if (window.innerWidth <= 768) {
+        if (!sidebar.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+          sidebar.classList.remove('show');
+        }
+      }
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        sidebar.classList.remove('show');
+      }
     });
   </script>
-
+  
+  
 </body>
 </html>

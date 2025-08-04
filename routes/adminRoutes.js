@@ -48,11 +48,9 @@ router.get('/admin/dashboard', isAuthenticated, async (req, res) => {
     }
 });
 
-
-
 // GET: Register page
 router.get('/admin/register', (req, res) => {
-  res.render('admin/register',{ layout: false });
+  res.render('admin/register',{ layout: 'admin/layout',activePage: 'staff'});
 });
 
 // POST: Register
@@ -62,7 +60,7 @@ router.post('/admin/register', async (req, res) => {
 
   try {
     await Admin.create({ name, email, password: hashed });
-    res.redirect('/admin');
+    res.redirect('/admin/dashboard');
   } catch (err) {
     res.send("Email already exists");
   }
@@ -202,6 +200,8 @@ router.get('/admin/course/edit/:id', async (req, res) => {
     res.status(500).send('Failed to load course');
   }
 });
+
+// Admin Routes
 
 router.post('/admin/course/edit/:id', async (req, res) => {
   try {
