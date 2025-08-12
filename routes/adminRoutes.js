@@ -55,15 +55,22 @@ router.get('/admin/register', (req, res) => {
 
 // POST: Register
 router.post('/admin/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password , contact } = req.body;
   const hashed = await bcrypt.hash(password, 10);
 
   try {
-    await Admin.create({ name, email, password: hashed });
+    await Admin.create({ name, email, password: hashed, contact });
     res.redirect('/admin/dashboard');
   } catch (err) {
     res.send("Email already exists");
   }
+});
+
+router.get('/admin/view_staff', async (req, res) => {
+  var staff = await Admin.find();
+  console.log(staff);
+  
+  res.render('admin/view_staff',{ staff , layout: 'admin/layout',activePage: 'view_staff'});
 });
 
 // GET: Login page

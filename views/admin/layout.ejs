@@ -367,6 +367,14 @@
           <span class="sidebar-text">Add Staff</span>
         </a>
       </div>
+
+       
+      <div class="sidebar-item">
+        <a href="/admin/view_staff" class="sidebar-link <%= activePage === 'view_staff' ? 'active' : '' %>">
+          <i class="bi bi-person sidebar-icon"></i>
+          <span class="sidebar-text">View Staff</span>
+        </a>
+      </div>
       
       <div class="sidebar-item">
         <a href="/admin/students" class="sidebar-link <%= activePage === 'students' ? 'active' : '' %>">
@@ -386,13 +394,6 @@
         <a href="/admin/course/add" class="sidebar-link <%= activePage === 'addCourse' ? 'active' : '' %>">
           <i class="bi bi-journal-plus sidebar-icon"></i>
           <span class="sidebar-text">Add Course</span>
-        </a>
-      </div>
-      
-      <div class="sidebar-item">
-        <a href="/admin/report/all" class="sidebar-link <%= activePage === 'reports' ? 'active' : '' %>">
-          <i class="bi bi-bar-chart sidebar-icon"></i>
-          <span class="sidebar-text">Reports</span>
         </a>
       </div>
       
