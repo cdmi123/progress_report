@@ -18,6 +18,10 @@ const studentSchema = new mongoose.Schema({
     type: String,
     default: null // base64 signature image
   },
+  status:{
+    type:String,
+    default:"Running"
+  },
   createdAt: {
     type: Date,
     default: Date.now
