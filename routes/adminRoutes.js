@@ -16,10 +16,20 @@ function isAuthenticated(req, res, next) {
 // ✅ GET: Admin Dashboard (only one definition)
 router.get('/admin/dashboard', isAuthenticated, async (req, res) => {
   try {
-      const totalStudents = await Student.countDocuments();
+       const admin = await Admin.findById(req.session.adminId);
+
+    let totalStudents;
+    if (admin.role === 1) {
+      // Role 1: Count all students
+      totalStudents = await Student.countDocuments();
+    } else {
+      // Role 2: Count only their students
+      totalStudents = await Student.countDocuments({ facultyName: admin._id });
+    }
       const totalCourses = await Course.countDocuments();
       const totalReports = await Report.countDocuments();
       const totalAdmins = await Admin.countDocuments();
+     
   
       const courses = await Course.find();
       const chartLabels = [];
@@ -87,6 +97,7 @@ router.post('/admin', async (req, res) => {
 
     if(admin.status=='Active'){
         req.session.adminId = admin._id;
+        req.session.adminRole = admin.role;
         res.redirect('/admin/dashboard');
     }else{
       res.render('admin/login',{error:"Your Account is block!.",layout: false})
@@ -106,11 +117,13 @@ router.get('/admin/student/edit/:id', async (req, res) => {
 
   const student = await Student.findById(req.params.id).populate('courses');
   const courses = await Course.find();
+  const staffList = await Admin.find();
 
   res.render('admin/editStudent', {
     layout: 'admin/layout',
     student,
     courses,
+    staffList,
      activePage: 'students',
   });
 });

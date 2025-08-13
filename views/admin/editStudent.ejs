@@ -29,8 +29,17 @@
           <div id="regNoWarning" class="text-danger small d-none">This registration number already exists.</div>
         </div>
         <div class="col-md-4">
-          <label class="form-label">Faculty Name</label>
-          <input name="facultyName" class="form-control" value="<%= student.facultyName %>" required />
+          <div class="col-md-12">
+            <label class="form-label">Staff Name</label>
+            <select name="facultyName" class="form-select" required>
+              <option disabled selected>Select Faculty</option>
+              <% staffList.forEach(staff=> { %>
+                <option value="<%= staff._id %>">
+                  <%= staff.name %>
+                </option>
+                <% }) %>
+            </select>
+          </div>
         </div>
         <div class="col-md-4">
           <label class="form-label">Password</label>

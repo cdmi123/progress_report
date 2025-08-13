@@ -39,6 +39,11 @@ app.use(session({
   saveUninitialized: false
 }));
 
+app.use((req, res, next) => {
+  res.locals.adminRole = req.session.adminRole; // ✅ Now accessible in EJS
+  next();
+});
+
 // Register routes
 app.use('/', studentRoutes);
 app.use('/', courseRoutes);

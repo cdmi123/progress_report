@@ -4,7 +4,10 @@ const studentSchema = new mongoose.Schema({
   name: String,
   contact: String,
   regNo: String,
-  facultyName: String,
+  facultyName:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Admin"
+  },
   startDate: String,
   endDate: String,
   email: {

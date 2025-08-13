@@ -354,56 +354,77 @@
     </div>
     
     <div class="sidebar-menu">
-      <div class="sidebar-item">
-        <a href="/admin/dashboard" class="sidebar-link <%= activePage === 'dashboard' ? 'active' : '' %>">
-          <i class="bi bi-speedometer2 sidebar-icon"></i>
-          <span class="sidebar-text">Dashboard</span>
-        </a>
-      </div>
-      
-      <div class="sidebar-item">
-        <a href="/admin/register" class="sidebar-link <%= activePage === 'staff' ? 'active' : '' %>">
-          <i class="bi bi-person sidebar-icon"></i>
-          <span class="sidebar-text">Add Staff</span>
-        </a>
-      </div>
-
-       
-      <div class="sidebar-item">
-        <a href="/admin/view_staff" class="sidebar-link <%= activePage === 'view_staff' ? 'active' : '' %>">
-          <i class="bi bi-person sidebar-icon"></i>
-          <span class="sidebar-text">View Staff</span>
-        </a>
-      </div>
-      
-      <div class="sidebar-item">
-        <a href="/admin/students" class="sidebar-link <%= activePage === 'students' ? 'active' : '' %>">
-          <i class="bi bi-people sidebar-icon"></i>
-          <span class="sidebar-text">Students</span>
-        </a>
-      </div>
-      
-      <div class="sidebar-item">
-        <a href="/admin/student/add" class="sidebar-link <%= activePage === 'addStudent' ? 'active' : '' %>">
-          <i class="bi bi-person-plus sidebar-icon"></i>
-          <span class="sidebar-text">Add Student</span>
-        </a>
-      </div>
-      
-      <div class="sidebar-item">
-        <a href="/admin/course/add" class="sidebar-link <%= activePage === 'addCourse' ? 'active' : '' %>">
-          <i class="bi bi-journal-plus sidebar-icon"></i>
-          <span class="sidebar-text">Add Course</span>
-        </a>
-      </div>
-      
-      <div class="sidebar-item">
-        <a href="/admin/logout" class="sidebar-link text-danger">
-          <i class="bi bi-box-arrow-right sidebar-icon"></i>
-          <span class="sidebar-text">Logout</span>
-        </a>
-      </div>
+  <% if (adminRole === 1) { %>
+    <!-- Menu for Role 1 -->
+    <div class="sidebar-item">
+      <a href="/admin/dashboard" class="sidebar-link <%= activePage === 'dashboard' ? 'active' : '' %>">
+        <i class="bi bi-speedometer2 sidebar-icon"></i>
+        <span class="sidebar-text">Dashboard</span>
+      </a>
     </div>
+    <div class="sidebar-item">
+      <a href="/admin/register" class="sidebar-link <%= activePage === 'staff' ? 'active' : '' %>">
+        <i class="bi bi-person sidebar-icon"></i>
+        <span class="sidebar-text">Add Staff</span>
+      </a>
+    </div>
+    <div class="sidebar-item">
+      <a href="/admin/view_staff" class="sidebar-link <%= activePage === 'view_staff' ? 'active' : '' %>">
+        <i class="bi bi-person sidebar-icon"></i>
+        <span class="sidebar-text">View Staff</span>
+      </a>
+    </div>
+    <div class="sidebar-item">
+      <a href="/admin/students" class="sidebar-link <%= activePage === 'students' ? 'active' : '' %>">
+        <i class="bi bi-people sidebar-icon"></i>
+        <span class="sidebar-text">Students</span>
+      </a>
+    </div>
+    <div class="sidebar-item">
+      <a href="/admin/student/add" class="sidebar-link <%= activePage === 'addStudent' ? 'active' : '' %>">
+        <i class="bi bi-person-plus sidebar-icon"></i>
+        <span class="sidebar-text">Add Student</span>
+      </a>
+    </div>
+    <div class="sidebar-item">
+      <a href="/admin/course/add" class="sidebar-link <%= activePage === 'addCourse' ? 'active' : '' %>">
+        <i class="bi bi-journal-plus sidebar-icon"></i>
+        <span class="sidebar-text">Add Course</span>
+      </a>
+    </div>
+  
+  <% } else if (adminRole === 2) { %>
+    <!-- Menu for Role 2 -->
+    <div class="sidebar-item">
+      <a href="/admin/dashboard" class="sidebar-link <%= activePage === 'dashboard' ? 'active' : '' %>">
+        <i class="bi bi-speedometer2 sidebar-icon"></i>
+        <span class="sidebar-text">Dashboard</span>
+      </a>
+    </div>
+    <div class="sidebar-item">
+      <a href="/admin/students" class="sidebar-link <%= activePage === 'students' ? 'active' : '' %>">
+        <i class="bi bi-people sidebar-icon"></i>
+        <span class="sidebar-text">Students</span>
+      </a>
+    </div>
+    <div class="sidebar-item">
+      <a href="/admin/student/add" class="sidebar-link <%= activePage === 'addStudent' ? 'active' : '' %>">
+        <i class="bi bi-person-plus sidebar-icon"></i>
+        <span class="sidebar-text">Add Student</span>
+      </a>
+    </div>
+  <% } %>
+
+  <!-- Logout (always visible) -->
+  <div class="sidebar-item">
+    <a href="/admin/logout" class="sidebar-link text-danger">
+      <i class="bi bi-box-arrow-right sidebar-icon"></i>
+      <span class="sidebar-text">Logout</span>
+    </a>
+  </div>
+</div>
+
+
   </aside>
   
   <!-- Header -->
