@@ -59,7 +59,8 @@ router.get('/admin/student/add', isAdmin, async (req, res) => {
       layout: 'admin/layout',
       courses,
       staffList,
-      activePage: 'addStudent'
+      activePage: 'addStudent',
+      success:'true',
     });
   } catch (err) {
     console.error('Error loading add student page:', err);
@@ -250,5 +251,32 @@ router.get('/student/report/:reportId', isStudentLoggedIn, async (req, res) => {
     res.status(500).send('Error loading report');
   }
 });
+
+
+router.get('/admin/student/report/:reportId', async (req, res) => {
+  try {
+    const student = await Report.findById(req.params.reportId).populate('course').populate('student');
+    const report = await Report.findById(req.params.reportId).populate('course');
+
+    const fc_id = student.student.facultyName;
+
+    const facultyName = await Admin.findById(fc_id);
+
+    if (!student) return res.status(404).send('Report not found');
+
+    res.render('admin/progressReport', {
+      student: student.student,
+      report,
+      course: student.course,
+      f_name: facultyName.name,
+      layout: 'admin/layout',
+      activePage: 'report'
+    });
+  } catch (err) {
+    console.error('Error loading report:', err);
+    res.status(500).send('Error loading report');
+  }
+});
+
 
 module.exports = router;

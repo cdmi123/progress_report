@@ -129,11 +129,14 @@ router.get('/admin/student/edit/:id', async (req, res) => {
 });
 
 router.post('/admin/student/edit/:id', async (req, res) => {
-  const { name, regNo, contact, facultyName, startDate, endDate, password, courses , email } = req.body;
+  const { name, regNo, contact, facultyName, startDate, endDate, password, courses, email, signatureData } = req.body;
 
   try {
-    // 1. Update student
-    const student = await Student.findByIdAndUpdate(req.params.id, {
+    // Ensure `courses` is always an array
+    const updatedCourses = Array.isArray(courses) ? courses : [courses];
+
+    // Prepare update object
+    const updateData = {
       name,
       regNo,
       contact,
@@ -141,35 +144,37 @@ router.post('/admin/student/edit/:id', async (req, res) => {
       startDate,
       endDate,
       password,
-      courses,
-      signatureData: req.body.signatureData,
-      email,
-    }, { new: true });
+      courses: updatedCourses,
+      email
+    };
 
-    // 2. Ensure `courses` is always an array
-    const updatedCourses = Array.isArray(courses) ? courses : [courses];
+    // ✅ Update signature only if provided
+    if (signatureData && signatureData.trim() !== '') {
+      updateData.signatureData = signatureData;
+    }
 
-    // 3. Loop through each selected course
+    // 1. Update student
+    const student = await Student.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
+    // 2. Add missing reports for newly added courses
     for (const courseId of updatedCourses) {
       const existing = await Report.findOne({ student: student._id, course: courseId });
 
       if (!existing) {
-        // Get course topics
         const course = await Course.findById(courseId);
+        if (!course) continue;
+
         const blankTopics = course.topics.map(topic => ({
           topicTitle: topic.title,
           isChecked: false,
           date: ''
         }));
 
-        // Create blank report
-        const newReport = new Report({
+        await Report.create({
           student: student._id,
           course: courseId,
           topics: blankTopics
         });
-
-        await newReport.save();
       }
     }
 
@@ -178,9 +183,10 @@ router.post('/admin/student/edit/:id', async (req, res) => {
 
   } catch (err) {
     console.error('Update student error:', err);
-    res.status(500).send('Failed to update student'+err);
+    res.status(500).send('Failed to update student: ' + err);
   }
 });
+
 
 router.post('/admin/report/custom/:studentId', async (req, res) => {
   const { courseName, topicTitles } = req.body;
