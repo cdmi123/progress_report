@@ -79,15 +79,20 @@ router.get('/admin', (req, res) => {
 });
 
 // POST: Login
-router.post('/admin/login', async (req, res) => {
+router.post('/admin', async (req, res) => {
   const { email, password } = req.body;
   const admin = await Admin.findOne({ email });
 
   if (admin && await bcrypt.compare(password, admin.password)) {
-    req.session.adminId = admin._id;
-    res.redirect('/admin/dashboard');
+
+    if(admin.status=='Active'){
+        req.session.adminId = admin._id;
+        res.redirect('/admin/dashboard');
+    }else{
+      res.render('admin/login',{error:"Your Account is block!.",layout: false})
+    }
   } else {
-    res.send('Invalid email or password');
+    res.render('admin/login',{error:"Email and password are invalide!.",layout: false})
   }
 });
 
@@ -164,7 +169,6 @@ router.post('/admin/student/edit/:id', async (req, res) => {
   }
 });
 
-
 router.post('/admin/report/custom/:studentId', async (req, res) => {
   const { courseName, topicTitles } = req.body;
 
@@ -209,7 +213,6 @@ router.get('/admin/course/edit/:id', async (req, res) => {
 });
 
 // Admin Routes
-
 router.post('/admin/course/edit/:id', async (req, res) => {
   try {
     const { name, topics } = req.body;
@@ -276,6 +279,26 @@ router.post('/admin/course/edit/:id', async (req, res) => {
   }
 });
 
+// GET: Register page
+router.get('/admin/edit/:id', async (req, res) => {
+  const admin = await Admin.findById(req.params.id);
+  res.render('admin/editadmin',{ layout: 'admin/layout',activePage: 'staff',admin});
+});
+
+// POST: Register
+router.post('/admin/edit/:id', async (req, res) => {
+
+  const hashed = await bcrypt.hash(req.body.password, 10);
+
+  req.body.password = hashed;
+
+  try {
+    await Admin.findByIdAndUpdate(req.params.id,req.body);
+    res.redirect('/admin/view_staff');
+  } catch (err) {
+    res.send("Email already exists");
+  }
+});
 
 
 

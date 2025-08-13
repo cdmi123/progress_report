@@ -19,7 +19,8 @@
               <th>Email</th>
               <th>Contact No</th>
               <th>Status</th>
-
+              <th>Role</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -29,7 +30,9 @@
                 <td><%= staf.name || '-' %></td>
                 <td><%= staf.email || '-' %></td>
                 <td><%= staf.contact || '-' %></td>
-                <td><%= staf.role || '-' %></td>
+                <td><%= staf.status || '-' %></td>
+                <td><% if(staf.role==1) { %> Admin <% } else { %> Staff <% } %></td>
+                <td><a href="/admin/edit/<%= staf.id %>">Update</a></td>
               </tr>
             <% }) %>
           </tbody>
