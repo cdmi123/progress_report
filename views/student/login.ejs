@@ -7,6 +7,97 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <style>
+    body {
+      background: none;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .bg-blur {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1500&q=80');
+      background-size: cover;
+      background-position: center;
+      filter: blur(10px) brightness(0.7);
+      z-index: 0;
+    }
+    .login-container {
+      max-width: 450px;
+      width: 90%;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(8px) saturate(120%);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s;
+      animation: fadeInUp 1s cubic-bezier(.39,.575,.565,1) both;
+    }
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* ...existing CSS... */
+    .login-header h1 {
+      color: var(--primary-color);
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px rgba(78, 115, 223, 0.08);
+    }
+    .btn-login {
+      background: linear-gradient(90deg, var(--primary-color), #2e59d9 80%);
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(78, 115, 223, 0.10);
+    }
+    .btn-login:hover {
+      background: linear-gradient(90deg, #2e59d9, var(--primary-color) 80%);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 24px rgba(78, 115, 223, 0.18);
+    }
+    .form-control {
+      border-radius: 10px;
+      border: 1px solid #e3e6f0;
+      padding: 12px 15px;
+      height: auto;
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+      transition: box-shadow 0.2s;
+    }
+    .form-control:focus {
+      box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.18);
+      border-color: var(--primary-color);
+      background: #fff;
+    }
+    /* Responsive */
+    @media (max-width: 576px) {
+      .login-container {
+        padding: 16px;
+        border-radius: 12px;
+      }
+      .login-header h1 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+  <style>
     :root {
       --primary-color: #4e73df;
       --secondary-color: #858796;
@@ -191,7 +282,8 @@
   </style>
 </head>
 <body>
-  <div class="container d-flex align-items-center justify-content-center min-vh-100">
+  <div class="bg-blur"></div>
+  <div class="container d-flex align-items-center justify-content-center min-vh-100" style="position:relative; z-index:1;">
     <div class="login-container">
       <div class="login-header">
         <div class="mb-3">
