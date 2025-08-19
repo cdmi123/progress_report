@@ -258,6 +258,8 @@ router.get('/admin/student/report/:reportId', async (req, res) => {
     const student = await Report.findById(req.params.reportId).populate('course').populate('student');
     const report = await Report.findById(req.params.reportId).populate('course');
 
+    
+        // console.log(student.student);
     const fc_id = student.student.facultyName;
 
     const facultyName = await Admin.findById(fc_id);

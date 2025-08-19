@@ -43,6 +43,8 @@ app.use((req, res, next) => {
   res.locals.adminRole = req.session.adminRole; // ✅ Now accessible in EJS
   next();
 });
+const pdfRoutes = require('./routes/pdfRoutes');
+app.use('/pdf', pdfRoutes);
 
 // Register routes
 app.use('/', studentRoutes);

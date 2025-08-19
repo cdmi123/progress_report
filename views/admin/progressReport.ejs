@@ -55,16 +55,16 @@
 
     <div class="row gy-1">
       <div class="col-12 col-md-6">
-        <strong>Name:</strong> <%= student.name %>
+        <strong>Name:</strong> <%= student.name || '' %>
       </div>
       <div class="col-12 col-md-6">
-        <strong>Contact:</strong> <%= student.contact %>
+        <strong>Contact:</strong> <%= student.contact || '' %>
       </div>
       <div class="col-12 col-md-6">
-        <strong>Course:</strong> <%= course.name %>
+        <strong>Course:</strong> <%= course.name || '' %>
       </div>
       <div class="col-12 col-md-6">
-        <strong>Faculty:</strong> <%= f_name %>
+        <strong>Faculty:</strong> <%= f_name || '' %>
       </div>
       <div class="col-12 col-md-6">
         <strong>Start Date:</strong> <%= student.startDate %>
@@ -76,14 +76,11 @@
   </div>
 
   <!-- Reg No + Buttons Section -->
-  <div class="no-print d-flex flex-column align-items-md-end gap-2 mt-3 mt-md-0">
-    <div><strong>Reg No:</strong> <%= student.regNo %></div>
-    <a href="/report/<%= student._id %>/pdf" class="btn btn-outline-success d-flex align-items-center gap-1">
+  <div class="btn btn-outline-primary d-flex align-items-center gap-1">
+     
+    <a href="/pdf/report/<%= student._id %>/<%= course._id %>" class="btn btn-primary" > 
       <i class="bi bi-file-earmark-pdf"></i> Download PDF
-    </a>
-    <button onclick="window.print()" class="btn btn-outline-primary d-flex align-items-center gap-1">
-      <i class="bi bi-printer"></i> Print
-    </button>
+</a>
   </div>
 </div>
 
