@@ -296,9 +296,45 @@
       font-style: italic;
     }
     
-    .no-print {
-      display: inline-block;
-    }
+         .no-print {
+       display: inline-block;
+     }
+     
+     /* Fix Modal Positioning and Z-Index */
+     .modal {
+       z-index: 1055 !important;
+     }
+     
+     .modal-backdrop {
+       z-index: 1050 !important;
+     }
+     
+     .modal-dialog {
+       margin: 1.75rem auto !important;
+       max-width: 500px !important;
+     }
+     
+     /* Ensure modal is centered and visible */
+     .modal.show {
+       display: block !important;
+       background-color: rgba(0, 0, 0, 0.5) !important;
+     }
+     
+     /* Fix any conflicting z-index from custom styles */
+     .report-container {
+       position: relative;
+       z-index: 1;
+     }
+     
+     /* Additional modal fixes */
+     .modal.fade .modal-dialog {
+       transition: transform 0.3s ease-out;
+       transform: translate(0, -50px);
+     }
+     
+     .modal.show .modal-dialog {
+       transform: none;
+     }
     
     /* Print Styles - A4 Paper Size */
     @media print {
@@ -549,11 +585,19 @@
         <button onclick="printReport()" class="btn-action btn-print">
           <i class="bi bi-printer"></i> Print Report
         </button>
+          <% if (course && (course.name === 'Datascience' || course.name === 'Dataanalytics')) { %>
+            <button type="button" class="btn-action btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addTopicModal">
+              <i class="bi bi-plus-circle me-1"></i>Add New Topic
+            </button>
+          <% } %>
       </div>
       
       <!-- Topics Section -->
       <div class="topics-section">
-        <h3 class="section-heading">Topics Covered</h3>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="section-heading mb-0">Topics Covered</h3>
+         
+        </div>
         
         <div class="topics-table">
           <table class="table-custom">
@@ -561,9 +605,10 @@
               <tr>
                 <th width="5%">#</th>
                 <th width="10%">Status</th>
-                <th width="45%">Topic</th>
-                <th width="20%">Date</th>
-                <th width="20%">Signature</th>
+                <th width="40%">Topic</th>
+                <th width="15%">Added By</th>
+                <th width="15%">Date</th>
+                <th width="15%">Signature</th>
               </tr>
             </thead>
             <tbody>
@@ -573,7 +618,25 @@
                   <td>
                     <input type="checkbox" class="topic-checkbox" data-index="<%= i %>" <%=topic.isChecked ? 'checked' : '' %> <%= topic.isChecked ? 'disabled' : '' %> />
                   </td>
-                  <td class="topic-name"><%= topic.topicTitle %></td>
+                  <td class="topic-name">
+                    <%= topic.topicTitle %>
+                    <% if (topic.addedBy === 'student') { %>
+                      <span class="badge bg-warning text-dark ms-2" style="font-size: 0.7rem;">
+                        <i class="bi bi-person-plus"></i> Student Added
+                      </span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <% if (topic.addedBy === 'student') { %>
+                      <span class="text-success">
+                        <i class="bi bi-person"></i> Student
+                      </span>
+                    <% } else { %>
+                      <span class="text-primary">
+                        <i class="bi bi-shield-check"></i> Admin
+                      </span>
+                    <% } %>
+                  </td>
                   <td>
                     <input type="text" id="date-<%= i %>" class="date-input" value="<%= topic.date %>" readonly placeholder="DD/MM/YYYY" <%=topic.isChecked ? 'disabled' : '' %>/>
                   </td>
@@ -584,6 +647,37 @@
               <% }); %>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Add Topic Modal -->
+      <div class="modal fade" id="addTopicModal" tabindex="-1" aria-labelledby="addTopicModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addTopicModalLabel">
+                <i class="bi bi-plus-circle me-2"></i>Add New Topic
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="addTopicForm">
+                <div class="mb-3">
+                  <label for="newTopicTitle" class="form-label">Topic Title</label>
+                  <input type="text" class="form-control" id="newTopicTitle" placeholder="Enter topic title" required>
+                  <div class="form-text">
+                    <i class="bi bi-info-circle me-1"></i>This topic will be added to your course and shared with other students.
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" onclick="addNewTopic()">
+                <i class="bi bi-plus-circle me-1"></i>Add Topic
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -597,9 +691,32 @@
     </div>
   </div>
 
-  <!-- JS: Checkbox Date Auto-Fill -->
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Alternative Bootstrap CDN if first one fails -->
+  <script>
+    if (typeof bootstrap === 'undefined') {
+      console.log('Loading alternative Bootstrap CDN...');
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js';
+      document.head.appendChild(script);
+    }
+  </script>
+  
+  <!-- JS: Checkbox Date Auto-Fill & Add Topic -->
   <script>
     const reportId = "<%= report._id %>";
+    const courseId = "<%= course._id %>";
+    
+    // Ensure modal is attached to <body> to avoid clipping/stacking issues
+    document.addEventListener('DOMContentLoaded', function () {
+      const modalEl = document.getElementById('addTopicModal');
+      if (modalEl && modalEl.parentElement !== document.body) {
+        document.body.appendChild(modalEl);
+      }
+    });
+    
     // Get today's date in DD/MM/YYYY format
     function getCurrentDate() {
       const d = new Date();
@@ -610,6 +727,66 @@
     function printReport() {
       window.print();
     }
+    
+    // Add new topic function
+    async function addNewTopic() {
+      const topicTitle = document.getElementById('newTopicTitle').value.trim();
+      
+      if (!topicTitle) {
+        alert('Please enter a topic title');
+        return;
+      }
+      
+      try {
+        const response = await fetch('/student/add-topic', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            courseId: courseId,
+            topicTitle: topicTitle
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ Topic added successfully!');
+          // Close modal using Bootstrap (with safe fallback)
+          const modalEl = document.getElementById('addTopicModal');
+          if (modalEl) {
+            try {
+              if (typeof bootstrap !== 'undefined') {
+                const instance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                instance.hide();
+              } else {
+                modalEl.style.display = 'none';
+                modalEl.classList.remove('show');
+                document.body.classList.remove('modal-open');
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) backdrop.remove();
+              }
+            } catch (e) {
+              modalEl.style.display = 'none';
+              modalEl.classList.remove('show');
+              document.body.classList.remove('modal-open');
+              const backdrop = document.querySelector('.modal-backdrop');
+              if (backdrop) backdrop.remove();
+            }
+          }
+          // Clear form
+          document.getElementById('newTopicTitle').value = '';
+          // Refresh page to show new topic
+          location.reload();
+        } else {
+          alert('❌ ' + result.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('🚫 Server error: ' + error.message);
+      }
+    }
+    
+    // Removed custom open/close helpers to avoid conflicts with Bootstrap
     
     // Add event listeners to all checkboxes
     document.querySelectorAll('.topic-checkbox').forEach(cb => {

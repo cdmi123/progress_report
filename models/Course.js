@@ -1,7 +1,20 @@
 const mongoose = require('mongoose');
 
 const topicSchema = new mongoose.Schema({
-  title: String
+  title: String,
+  addedBy: {
+    type: String, // 'admin' or 'student'
+    default: 'admin'
+  },
+  addedByStudent: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Student',
+    default: null
+  },
+  addedAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 const courseSchema = new mongoose.Schema({

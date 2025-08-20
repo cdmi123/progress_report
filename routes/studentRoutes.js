@@ -213,9 +213,39 @@ router.post('/admin/course/edit/:id', isAdmin, async (req, res) => {
   try {
     const { name, topics } = req.body;
 
+    // Get existing course to preserve topic metadata
+    const existingCourse = await Course.findById(req.params.id);
+    if (!existingCourse) {
+      return res.status(404).send('Course not found');
+    }
+
+    // Map topics while preserving existing metadata
     const updatedTopics = Array.isArray(topics)
-      ? topics.map(t => ({ title: t }))
-      : [{ title: topics }];
+      ? topics.map((t, index) => {
+          // If topic exists in current course, preserve its metadata
+          if (existingCourse.topics[index]) {
+            return {
+              title: t,
+              addedBy: existingCourse.topics[index].addedBy || 'admin',
+              addedByStudent: existingCourse.topics[index].addedByStudent || null,
+              addedAt: existingCourse.topics[index].addedAt || new Date()
+            };
+          } else {
+            // New topic - set as admin added
+            return {
+              title: t,
+              addedBy: 'admin',
+              addedByStudent: null,
+              addedAt: new Date()
+            };
+          }
+        })
+      : [{
+          title: topics,
+          addedBy: 'admin',
+          addedByStudent: null,
+          addedAt: new Date()
+        }];
 
     await Course.findByIdAndUpdate(req.params.id, {
       name,
@@ -249,6 +279,119 @@ router.get('/student/report/:reportId', isStudentLoggedIn, async (req, res) => {
   } catch (err) {
     console.error('Error loading report:', err);
     res.status(500).send('Error loading report');
+  }
+});
+
+// Student add topic to course (only for their own report)
+router.post('/student/add-topic', isStudentLoggedIn, async (req, res) => {
+  try {
+    const { courseId, topicTitle } = req.body;
+    const studentId = req.session.studentId;
+    const student = await Student.findById(studentId);
+
+    if (!courseId || !topicTitle) {
+      return res.status(400).json({ success: false, message: 'Course ID and topic title are required' });
+    }
+
+    // Validate course
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ success: false, message: 'Course not found' });
+    }
+
+    // Find ONLY this student's report for the course
+    const report = await Report.findOne({ course: courseId, student: studentId });
+    if (!report) {
+      return res.status(404).json({ success: false, message: 'Report not found for this student' });
+    }
+
+    // Add topic only to this student's report
+    report.topics.push({
+      topicTitle,
+      isChecked: false,
+      date: '',
+      addedBy: 'student',
+      addedByStudent: studentId,
+      addedAt: new Date()
+    });
+    await report.save();
+
+    res.json({
+      success: true,
+      message: 'Topic added to your report',
+      topic: { title: topicTitle }
+    });
+
+  } catch (err) {
+    console.error('Error adding topic:', err);
+    res.status(500).json({ success: false, message: 'Failed to add topic: ' + err.message });
+  }
+});
+
+// Admin remove topic (only student-added topics)
+router.post('/admin/remove-topic', isAdmin, async (req, res) => {
+  try {
+    const { courseId, topicIndex } = req.body;
+
+    if (!courseId || topicIndex === undefined) {
+      return res.status(400).json({ success: false, message: 'Course ID and topic index are required' });
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ success: false, message: 'Course not found' });
+    }
+
+    // Check if topic exists and was added by student
+    if (topicIndex >= course.topics.length) {
+      return res.status(404).json({ success: false, message: 'Topic not found' });
+    }
+
+    const topic = course.topics[topicIndex];
+    if (topic.addedBy !== 'student') {
+      return res.status(403).json({ success: false, message: 'Only student-added topics can be removed' });
+    }
+
+    // Remove topic from course
+    course.topics.splice(topicIndex, 1);
+    await course.save();
+
+    // Remove topic from all reports for this course
+    const reports = await Report.find({ course: courseId });
+    for (const report of reports) {
+      if (report.topics[topicIndex]) {
+        report.topics.splice(topicIndex, 1);
+        await report.save();
+      }
+    }
+
+    res.json({ 
+      success: true, 
+      message: 'Topic removed successfully' 
+    });
+
+  } catch (err) {
+    console.error('Error removing topic:', err);
+    res.status(500).json({ success: false, message: 'Failed to remove topic' });
+  }
+});
+
+// Get course details for admin
+router.get('/admin/course/details/:id', isAdmin, async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ success: false, message: 'Course not found' });
+    }
+
+    res.json({ 
+      success: true, 
+      data: course 
+    });
+
+  } catch (err) {
+    console.error('Error getting course details:', err);
+    res.status(500).json({ success: false, message: 'Failed to get course details' });
   }
 });
 

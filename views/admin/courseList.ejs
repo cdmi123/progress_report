@@ -13,16 +13,34 @@
           <th>#</th>
           <th>Course Name</th>
           <th>Total Topics</th>
+          <th>Student Added</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <% courses.forEach((course, i) => { %>
+        <% courses.forEach((course, i) => { 
+          const studentTopics = course.topics.filter(t => t.addedBy === 'student').length;
+          const adminTopics = course.topics.length - studentTopics;
+        %>
           <tr>
             <td><%= i + 1 %></td>
             <td><%= course.name %></td>
-            <td><%= course.topics.length %></td>
             <td>
+              <span class="badge bg-primary"><%= course.topics.length %></span>
+            </td>
+            <td>
+              <% if (studentTopics > 0) { %>
+                <span class="badge bg-warning text-dark">
+                  <i class="bi bi-person-plus"></i> <%= studentTopics %> student topics
+                </span>
+              <% } else { %>
+                <span class="text-muted">None</span>
+              <% } %>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-info me-1" onclick="viewCourseDetails('<%= course._id %>')" title="View Details">
+                <i class="bi bi-eye"></i>
+              </button>
               <a href="/admin/course/edit/<%= course._id %>" class="btn btn-sm btn-warning me-1" title="Edit">
                 <i class="bi bi-pencil-square"></i>
               </a>
@@ -37,3 +55,109 @@
     </table>
   </div>
 </div>
+
+<!-- Course Details Modal -->
+<div class="modal fade" id="courseDetailsModal" tabindex="-1" aria-labelledby="courseDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="courseDetailsModalLabel">
+          <i class="bi bi-journal-text me-2"></i>Course Details
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="courseDetailsContent">
+        <!-- Content will be loaded here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function viewCourseDetails(courseId) {
+  try {
+    const response = await fetch(`/admin/course/details/${courseId}`);
+    const course = await response.json();
+    
+    if (course.success) {
+      const content = `
+        <div class="mb-3">
+          <h6 class="fw-bold">${course.data.name}</h6>
+          <p class="text-muted">Total Topics: ${course.data.topics.length}</p>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th>Topic</th>
+                <th>Added By</th>
+                <th>Date Added</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${course.data.topics.map((topic, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${topic.title}</td>
+                  <td>
+                    ${topic.addedBy === 'student' 
+                      ? '<span class="badge bg-warning text-dark"><i class="bi bi-person"></i> Student</span>'
+                      : '<span class="badge bg-primary"><i class="bi bi-shield-check"></i> Admin</span>'
+                    }
+                  </td>
+                  <td>${new Date(topic.addedAt).toLocaleDateString()}</td>
+                  <td>
+                    ${topic.addedBy === 'student' 
+                      ? `<button class="btn btn-sm btn-danger" onclick="removeTopic('${courseId}', ${index})">
+                           <i class="bi bi-trash"></i> Remove
+                         </button>`
+                      : '<span class="text-muted">Cannot remove</span>'
+                    }
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      document.getElementById('courseDetailsContent').innerHTML = content;
+      new bootstrap.Modal(document.getElementById('courseDetailsModal')).show();
+    } else {
+      alert('Failed to load course details');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error loading course details');
+  }
+}
+
+async function removeTopic(courseId, topicIndex) {
+  if (!confirm('Are you sure you want to remove this student-added topic?')) {
+    return;
+  }
+  
+  try {
+    const response = await fetch('/admin/remove-topic', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ courseId, topicIndex })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      alert('Topic removed successfully!');
+      location.reload();
+    } else {
+      alert('Error: ' + result.message);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error removing topic');
+  }
+}
+</script>

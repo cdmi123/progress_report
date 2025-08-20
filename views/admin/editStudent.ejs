@@ -32,12 +32,12 @@
           <div class="col-md-12">
             <label class="form-label">Staff Name</label>
             <select name="facultyName" class="form-select" required>
-              <option disabled selected>Select Faculty</option>
+              <option disabled>Select Faculty</option>
               <% staffList.forEach(staff=> { %>
-                <option value="<%= staff._id %>">
+                <option value="<%= staff._id %>" <%= (student.facultyName && (student.facultyName._id ? String(student.facultyName._id) : String(student.facultyName)) === String(staff._id)) ? 'selected' : '' %>>
                   <%= staff.name %>
                 </option>
-                <% }) %>
+              <% }) %>
             </select>
           </div>
         </div>
@@ -73,24 +73,21 @@
       <div class="row g-3 mb-3">
         <div class="col-md-6">
           <label class="form-label">Courses</label>
-          <select name="courses" class="form-select selectpicker"  multiple required>
+          <select name="courses" class="form-select selectpicker" multiple data-live-search="true" title="Select courses" required>
             <% courses.forEach(course => { %>
-            <option value="<%= course._id %>" <%= student.courses.some(c => c._id.equals(course._id)) ? 'selected' : '' %>>
-              <%= course.name %>
-            </option>
-          <% }) %>
+              <option value="<%= course._id %>" <%= student.courses.some(c => c._id.equals(course._id)) ? 'selected' : '' %>><%= course.name %></option>
+            <% }) %>
           </select>
-          <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple courses</small>
+          <small class="text-muted">Use the search box to find courses. You can select multiple.</small>
         </div>
         <div class="col-md-6">
           <label class="form-label">Add Signature</label>
           <button type="button" class=" form-control btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#signatureModal">
             Add Signature
           </button>
-          <img id="signaturePreview" src="<%= student.signatureData %>" alt="Signature Preview" style="max-width: 300px; margin-top: 10px; display: none;" />
+          <img id="signaturePreview" src="<%= student.signatureData %>" alt="Signature Preview" style="max-width: 300px; margin-top: 10px; <%= student.signatureData ? '' : 'display: none;' %>" />
         </div>
       </div>
-
 
       <div class="d-flex justify-content-between">
         <button class="btn btn-primary">
@@ -122,6 +119,13 @@
     </div>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"></script>
+
 
 <script>
   const passwordInput = document.getElementById('password');
@@ -179,15 +183,17 @@ if (success) {
 </script>
 
 <!-- signature script -->
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script> -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"></script>
 
 <script>
   const canvas = document.getElementById('signature-pad');
   const signaturePad = new SignaturePad(canvas);
+  
+  // Initialize enhanced selects
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.$ && $.fn.selectpicker) {
+      $('.selectpicker').selectpicker();
+    }
+  });
 
   function clearSignature() {
     signaturePad.clear();
