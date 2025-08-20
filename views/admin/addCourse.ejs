@@ -1,94 +1,183 @@
-<div class="container-fluid py-4">
-  <!-- Page Header -->
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <h2 class="fw-bold text-primary">
-        <i class="bi bi-book me-2"></i> Add New Course
-      </h2>
-      <p class="text-muted mb-0">Create a new course with topics and details</p>
-    </div>
-    <a href="/admin/dashboard" class="btn btn-outline-primary d-flex align-items-center">
-      <i class="bi bi-speedometer2 me-2"></i> Back to Dashboard
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold text-dark mb-1">
+      <i class="bi bi-journal-plus me-2 text-primary"></i>Add New Course
+    </h2>
+    <p class="text-muted mb-0">Create a new course with topics and intelligent scanning features</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/admin/dashboard" class="btn btn-outline-primary">
+      <i class="bi bi-speedometer2 me-2"></i>Dashboard
+    </a>
+    <a href="/admin/courses" class="btn btn-outline-secondary">
+      <i class="bi bi-journal-album me-2"></i>View Courses
     </a>
   </div>
+</div>
 
-  <!-- Form Card -->
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white border-0 py-2">
-      <h5 class="card-title mb-0">
-        <i class="bi bi-journal-text me-2 text-primary"></i> Course Information
-      </h5>
+<!-- Form Card -->
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white border-0 py-3">
+    <div class="d-flex align-items-center">
+      <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+        <i class="bi bi-journal-text text-primary"></i>
+      </div>
+      <div>
+        <h5 class="mb-1">Course Information</h5>
+        <p class="mb-0 text-muted">Fill in the details below to create your course</p>
+      </div>
     </div>
-    <div class="card-body py-3">
-      <form method="POST" action="/admin/course/add" id="courseForm">
-        <div class="row g-2">
-            <div class="col-12">
-              <div class="form-floating mb-2">
-                <input type="text" name="name" class="form-control" id="courseName" placeholder="Course Name" required>
-                <label for="courseName">
-                  <i class="bi bi-book-half me-1"></i> Course Name
-                </label>
-              </div>
-            </div>
-
-            <!-- Topic Name Selection -->
-            <div class="col-12">
-              <div class="form-floating mb-2">
-                <input type="text" name="topicName" class="form-control" id="topicName" placeholder="Topic Name" required>
-                <label for="topicName">
-                  <i class="bi bi-tag me-1"></i> Topic Name
-                </label>
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <label class="form-label fw-semibold mb-0">
-                  <i class="bi bi-list-ul me-1"></i> Topics
-                </label>
-                <div class="d-flex gap-2">
-                  <button type="button" class="btn btn-sm btn-outline-primary" onclick="addTopic()">
-                    <i class="bi bi-plus-circle me-1"></i> Add Topic
-                  </button>
-                  <button type="button" class="btn btn-sm btn-outline-success" onclick="openScanModal()">
-                    <i class="bi bi-camera me-1"></i> Scan Options
-                  </button>
-                </div>
-              </div>
-              <div id="topicsContainer" class="mb-2">
-                <div class="topic-item mb-2">
-                  <div class="input-group">
-                    <span class="input-group-text bg-light">
-                      <i class="bi bi-hash"></i>
-                    </span>
-                    <input type="text" name="topics" class="form-control topic-input" placeholder="Enter topic name" required>
-                    <button type="button" class="btn btn-outline-danger" onclick="removeTopic(this)" title="Remove topic">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+  </div>
+  
+  <div class="card-body p-4">
+    <form method="POST" action="/admin/course/add" id="courseForm">
+      <!-- Course Name Section -->
+      <div class="mb-4">
+        <div class="form-floating">
+          <input type="text" name="name" class="form-control" 
+                 id="courseName" placeholder="Course Name" required>
+          <label for="courseName">
+            <i class="bi bi-book-half me-2"></i>Course Name
+          </label>
         </div>
-        
-        <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
-          <a href="/admin/courses" class="btn btn-outline-secondary">
-            <i class="bi bi-journal-album me-2"></i> View All Courses
-          </a>
-          
+        <div class="form-text">
+          <i class="bi bi-info-circle me-1"></i>Enter a descriptive name for your course
+        </div>
+      </div>
+
+      <!-- Topics Section -->
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
           <div>
-            <button type="reset" class="btn btn-outline-secondary me-2">
-              <i class="bi bi-arrow-clockwise me-2"></i> Reset Form
+            <h6 class="mb-1 fw-semibold">
+              <i class="bi bi-list-ul me-2 text-primary"></i>Course Topics
+            </h6>
+            <p class="text-muted mb-0 small">Add individual topics or use smart scanning</p>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary btn-sm" onclick="addTopic()">
+              <i class="bi bi-plus-circle me-1"></i>Add Topic
             </button>
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-check-circle me-2"></i> Add Course
+            <button type="button" class="btn btn-success btn-sm" onclick="openScanModal()">
+              <i class="bi bi-camera me-1"></i>Smart Scan
             </button>
           </div>
         </div>
-      </form>
-    </div>
+        
+        <div id="topicsContainer">
+          <div class="topic-item mb-2">
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="bi bi-hash"></i>
+              </span>
+              <input type="text" name="topics" class="form-control topic-input" 
+                     placeholder="Enter topic name" required>
+              <button type="button" class="btn btn-outline-danger" onclick="removeTopic(this)" 
+                      title="Remove topic">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-3">
+          <div class="alert alert-info border-0 bg-light">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-lightbulb text-primary me-2"></i>
+              <div class="small">
+                <strong>Pro Tip:</strong> Use Smart Scan to automatically extract topics from PDFs, images, or camera captures
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+        <button type="reset" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-clockwise me-2"></i>Reset Form
+        </button>
+        
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-check-circle me-2"></i>Create Course
+        </button>
+      </div>
+    </form>
   </div>
 </div>
+
+<!-- Custom CSS for Add Course page -->
+<style>
+/* Animation for new topics */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.topic-item {
+  animation: slideIn 0.3s ease-out;
+  transition: all 0.3s ease;
+}
+
+.topic-item:hover {
+  transform: translateX(5px);
+}
+
+/* Enhanced form focus states */
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+}
+
+/* Button hover effects */
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Card hover effects */
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.loading {
+  animation: pulse 1.5s infinite;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1.5rem !important;
+  }
+  
+  .modal-body {
+    padding: 1.5rem !important;
+  }
+}
+</style>
 
 <!-- Toast Notification Container -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
@@ -113,22 +202,31 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="scanModalLabel">
-          <i class="bi bi-camera me-2"></i>Scan Options
-        </h5>
+        <div class="d-flex align-items-center">
+          <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+            <i class="bi bi-camera text-primary"></i>
+          </div>
+          <div>
+            <h5 class="modal-title mb-1">Smart Scanning Options</h5>
+            <p class="mb-0 text-muted small">Choose your preferred scanning method</p>
+          </div>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      
+      <div class="modal-body p-4">
         <div class="row g-3">
           <!-- Camera Capture -->
           <div class="col-md-4">
             <div class="card h-100 border-0 shadow-sm">
               <div class="card-body text-center p-4">
                 <div class="mb-3">
-                  <i class="bi bi-camera-video text-primary" style="font-size: 2.5rem;"></i>
+                  <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="bi bi-camera-video text-primary" style="font-size: 2rem;"></i>
+                  </div>
                 </div>
                 <h6 class="card-title">Camera Capture</h6>
-                <p class="card-text small text-muted">Take a photo with your camera</p>
+                <p class="card-text small text-muted mb-3">Take a photo with your camera</p>
                 <button type="button" class="btn btn-primary btn-sm w-100" onclick="captureFromCamera()">
                   <i class="bi bi-camera me-1"></i>Open Camera
                 </button>
@@ -141,10 +239,12 @@
             <div class="card h-100 border-0 shadow-sm">
               <div class="card-body text-center p-4">
                 <div class="mb-3">
-                  <i class="bi bi-image text-success" style="font-size: 2.5rem;"></i>
+                  <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="bi bi-image text-success" style="font-size: 2rem;"></i>
+                  </div>
                 </div>
                 <h6 class="card-title">Upload Image</h6>
-                <p class="card-text small text-muted">Select an image file from your device</p>
+                <p class="card-text small text-muted mb-3">Select an image file from your device</p>
                 <button type="button" class="btn btn-success btn-sm w-100" onclick="uploadImage()">
                   <i class="bi bi-upload me-1"></i>Choose Image
                 </button>
@@ -157,10 +257,12 @@
             <div class="card h-100 border-0 shadow-sm">
               <div class="card-body text-center p-4">
                 <div class="mb-3">
-                  <i class="bi bi-file-earmark-pdf text-danger" style="font-size: 2.5rem;"></i>
+                  <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="bi bi-file-earmark-pdf text-danger" style="font-size: 2rem;"></i>
+                  </div>
                 </div>
                 <h6 class="card-title">Upload PDF</h6>
-                <p class="card-text small text-muted">Select a PDF file to extract topics</p>
+                <p class="card-text small text-muted mb-3">Select a PDF file to extract topics</p>
                 <button type="button" class="btn btn-danger btn-sm w-100" onclick="uploadPdf()">
                   <i class="bi bi-file-earmark-pdf me-1"></i>Choose PDF
                 </button>
@@ -184,6 +286,9 @@
                 <button type="button" class="btn btn-primary me-2" onclick="capturePhoto()">
                   <i class="bi bi-camera me-1"></i>Capture Photo
                 </button>
+                <button type="button" class="btn btn-warning me-2" onclick="openFullscreenCamera()">
+                  <i class="bi bi-arrows-fullscreen me-1"></i>Full Screen
+                </button>
                 <button type="button" class="btn btn-secondary" onclick="closeCamera()">
                   <i class="bi bi-x-circle me-1"></i>Close Camera
                 </button>
@@ -193,6 +298,57 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Fullscreen Camera Overlay -->
+<div id="fullscreenCamera" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="z-index: 9999; background: #000;">
+  <div class="position-relative w-100 h-100">
+    <!-- Camera Video -->
+    <video id="fullscreenVideo" autoplay playsinline class="w-100 h-100 object-fit-cover"></video>
+    
+    <!-- Overlay Controls -->
+    <div class="position-absolute top-0 start-0 w-100 p-3" style="background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="text-white mb-0">
+          <i class="bi bi-camera me-2"></i>Document Scanner
+        </h5>
+        <button type="button" class="btn btn-outline-light btn-sm" onclick="closeFullscreenCamera()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+    
+         <!-- Bottom Controls -->
+     <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+       <div class="d-flex justify-content-center align-items-center gap-3">
+         <button type="button" class="btn btn-light btn-lg rounded-circle" onclick="closeFullscreenCamera()" style="width: 60px; height: 60px;">
+           <i class="bi bi-x-lg"></i>
+         </button>
+         <button type="button" class="btn btn-primary btn-lg rounded-circle" onclick="captureFullscreenPhoto()" style="width: 80px; height: 80px;">
+           <i class="bi bi-camera" style="font-size: 1.5rem;"></i>
+         </button>
+         <button type="button" class="btn btn-light btn-lg rounded-circle" onclick="switchCamera()" style="width: 60px; height: 60px;">
+           <i class="bi bi-arrow-repeat"></i>
+         </button>
+       </div>
+       
+       <!-- Auto-capture indicator -->
+       <div class="d-flex justify-content-center mt-3">
+         <div id="autoCaptureIndicator" class="d-flex align-items-center gap-2 px-3 py-2 rounded-pill" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+           <div id="autoCaptureStatus" class="d-flex align-items-center gap-2">
+             <div class="spinner-border spinner-border-sm text-success d-none" id="autoCaptureSpinner" role="status"></div>
+             <span class="text-white small">Auto-capture: <span id="autoCaptureText">Active</span></span>
+           </div>
+           <button type="button" class="btn btn-sm btn-outline-light" onclick="toggleAutoCapture()" id="autoCaptureToggle">
+             <i class="bi bi-pause-fill"></i>
+           </button>
+         </div>
+       </div>
+     </div>
+    
+    <!-- Canvas for capture -->
+    <canvas id="fullscreenCanvas" style="display: none;"></canvas>
   </div>
 </div>
 
@@ -330,6 +486,7 @@
 
   // Camera functions
   let stream = null;
+  let isFullscreen = false;
   
   async function captureFromCamera() {
     try {
@@ -377,6 +534,226 @@
     document.getElementById('cameraSection').classList.add('d-none');
   }
   
+  // Fullscreen camera functions
+  let autoCaptureInterval = null;
+  let lastCaptureTime = 0;
+  
+  function openFullscreenCamera() {
+    if (!stream) return;
+    
+    const fullscreenVideo = document.getElementById('fullscreenVideo');
+    const fullscreenCamera = document.getElementById('fullscreenCamera');
+    
+    fullscreenVideo.srcObject = stream;
+    fullscreenCamera.classList.remove('d-none');
+    isFullscreen = true;
+    
+    // Hide modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('scanModal'));
+    modal.hide();
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+    
+    // Start auto-capture monitoring
+    startAutoCapture();
+  }
+  
+  function closeFullscreenCamera() {
+    const fullscreenCamera = document.getElementById('fullscreenCamera');
+    fullscreenCamera.classList.add('d-none');
+    isFullscreen = false;
+    
+    // Stop auto-capture
+    stopAutoCapture();
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+    
+    // Show modal again
+    const modal = new bootstrap.Modal(document.getElementById('scanModal'));
+    modal.show();
+  }
+  
+  function captureFullscreenPhoto() {
+    const video = document.getElementById('fullscreenVideo');
+    const canvas = document.getElementById('fullscreenCanvas');
+    const context = canvas.getContext('2d');
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0);
+    
+    canvas.toBlob(async (blob) => {
+      const file = new File([blob], 'fullscreen-capture.jpg', { type: 'image/jpeg' });
+      closeFullscreenCamera();
+      closeCamera();
+      await handleImageFile(file);
+    }, 'image/jpeg', 0.9);
+  }
+  
+  // Auto-capture functions
+  let autoCaptureEnabled = true;
+  
+  function startAutoCapture() {
+    if (autoCaptureInterval) return;
+    
+    autoCaptureInterval = setInterval(async () => {
+      if (!isFullscreen || !stream || !autoCaptureEnabled) return;
+      
+      const video = document.getElementById('fullscreenVideo');
+      if (!video || video.readyState !== 4) return; // Not ready
+      
+      // Check if enough time has passed since last capture
+      const now = Date.now();
+      if (now - lastCaptureTime < 3000) return; // 3 second cooldown
+      
+      // Show analyzing indicator
+      const spinner = document.getElementById('autoCaptureSpinner');
+      const text = document.getElementById('autoCaptureText');
+      if (spinner && text) {
+        spinner.classList.remove('d-none');
+        text.textContent = 'Analyzing...';
+      }
+      
+      // Analyze image quality
+      const quality = await analyzeImageQuality(video);
+      
+      // Hide spinner
+      if (spinner) spinner.classList.add('d-none');
+      
+      if (quality.isGood) {
+        console.log('Auto-capturing: Good quality detected', quality);
+        if (text) text.textContent = 'Capturing...';
+        lastCaptureTime = now;
+        await captureFullscreenPhoto();
+      } else {
+        if (text) text.textContent = 'Waiting for good quality...';
+      }
+    }, 1000); // Check every second
+  }
+  
+  function toggleAutoCapture() {
+    autoCaptureEnabled = !autoCaptureEnabled;
+    
+    const toggleBtn = document.getElementById('autoCaptureToggle');
+    const text = document.getElementById('autoCaptureText');
+    
+    if (autoCaptureEnabled) {
+      toggleBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+      if (text) text.textContent = 'Active';
+      showNotification('Auto-capture enabled', 'info');
+    } else {
+      toggleBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+      if (text) text.textContent = 'Paused';
+      showNotification('Auto-capture paused', 'warning');
+    }
+  }
+  
+  function stopAutoCapture() {
+    if (autoCaptureInterval) {
+      clearInterval(autoCaptureInterval);
+      autoCaptureInterval = null;
+    }
+  }
+  
+  async function analyzeImageQuality(video) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0);
+    
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    // Calculate brightness and contrast
+    let totalBrightness = 0;
+    let totalContrast = 0;
+    let edgeCount = 0;
+    let textLikePixels = 0;
+    
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      
+      // Brightness (0-255)
+      const brightness = (r + g + b) / 3;
+      totalBrightness += brightness;
+      
+      // Check for text-like patterns (high contrast areas)
+      if (i > 0 && i < data.length - 4) {
+        const prevBrightness = (data[i - 4] + data[i - 3] + data[i - 2]) / 3;
+        const contrast = Math.abs(brightness - prevBrightness);
+        totalContrast += contrast;
+        
+        if (contrast > 50) {
+          edgeCount++;
+        }
+        
+        // Detect potential text (dark pixels with good contrast)
+        if (brightness < 100 && contrast > 30) {
+          textLikePixels++;
+        }
+      }
+    }
+    
+    const avgBrightness = totalBrightness / (data.length / 4);
+    const avgContrast = totalContrast / (data.length / 4);
+    const edgeDensity = edgeCount / (data.length / 4);
+    const textDensity = textLikePixels / (data.length / 4);
+    
+          // Quality criteria - more lenient for better detection
+      const isGood = (
+        avgBrightness > 60 && avgBrightness < 220 && // Wider brightness range
+        avgContrast > 15 && // Lower contrast threshold
+        edgeDensity > 0.005 && // Lower edge threshold
+        textDensity > 0.003 // Lower text density threshold
+      );
+    
+    return {
+      isGood,
+      brightness: avgBrightness,
+      contrast: avgContrast,
+      edgeDensity,
+      textDensity
+    };
+  }
+  
+  async function switchCamera() {
+    if (!stream) return;
+    
+    // Stop current stream
+    stream.getTracks().forEach(track => track.stop());
+    
+    try {
+      // Get new stream with different facing mode
+      const currentFacingMode = stream.getVideoTracks()[0].getSettings().facingMode;
+      const newFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+      
+      stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: newFacingMode,
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+        } 
+      });
+      
+      // Update both video elements
+      const modalVideo = document.getElementById('cameraVideo');
+      const fullscreenVideo = document.getElementById('fullscreenVideo');
+      
+      if (modalVideo) modalVideo.srcObject = stream;
+      if (fullscreenVideo) fullscreenVideo.srcObject = stream;
+      
+    } catch (err) {
+      console.error('Camera switch error:', err);
+      showNotification('Failed to switch camera', 'warning');
+    }
+  }
+  
   // Upload functions
   function uploadImage() {
     const input = document.getElementById('scanImageInput');
@@ -409,26 +786,53 @@
   async function handleImageFile(file) {
     try {
       toggleScanLoader(true);
+      const textEl = document.getElementById('scanLoaderText');
+      
+      if (textEl) textEl.textContent = 'Processing image...';
+      
+      // Enhanced OCR with better settings
       const { data } = await Tesseract.recognize(file, 'eng', {
         logger: (m) => {
-          // Optional: could update loader text with m.progress
-        }
+          if (textEl) {
+            if (m.status === 'recognizing text') {
+              textEl.textContent = `OCR Progress: ${Math.round(m.progress * 100)}%`;
+            } else if (m.status === 'loading tesseract core') {
+              textEl.textContent = 'Loading OCR engine...';
+            } else if (m.status === 'loading language traineddata') {
+              textEl.textContent = 'Loading language data...';
+            } else if (m.status === 'initializing tesseract') {
+              textEl.textContent = 'Initializing OCR...';
+            }
+          }
+        },
+        // Better OCR settings for document scanning
+        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:!?()[]{}"\'-_/\\|+=<>@#$%^&*~` ',
+        preserve_interword_spaces: '1',
+        tessedit_pageseg_mode: '6', // Uniform block of text
+        tessedit_ocr_engine_mode: '3' // Default, based on what is available
       });
+      
       const text = (data && data.text) ? data.text : '';
+      
       if (!text.trim()) {
-        showNotification('No text detected. Try a clearer photo.', 'warning');
+        showNotification('No text detected. Try a clearer photo with better lighting.', 'warning');
         return;
       }
+      
+      if (textEl) textEl.textContent = 'Extracting topics...';
+      
       const topics = parseTextToTopics(text);
       if (topics.length === 0) {
-        showNotification('Could not find topic lines in the image.', 'warning');
+        showNotification('Could not find topic lines in the image. Try a different angle or better lighting.', 'warning');
         return;
       }
+      
       addTopicsFromArray(topics);
-      showNotification(`Added ${topics.length} topic(s) from scan`, 'success');
+      showNotification(`Added ${topics.length} topic(s) from image scan`, 'success');
     } catch (err) {
       console.error('OCR error:', err);
-      showNotification('Scanning failed. Please try again.', 'danger');
+      const msg = (err && err.message) ? err.message : String(err);
+      showNotification(`Image scanning failed: ${msg}`, 'danger');
     } finally {
       toggleScanLoader(false);
     }
@@ -533,78 +937,125 @@
     if (textEl) textEl.textContent = 'Scanning for topics…';
   }
 
-     async function handlePdfFile(file) {
-     try {
-       toggleScanLoader(true);
-       const textEl = document.getElementById('scanLoaderText');
-       
-       // Check if PDF.js is available
-       if (typeof pdfjsLib === 'undefined') {
-         throw new Error('PDF.js library not loaded. Please refresh the page and try again.');
-       }
-       
-       if (!pdfjsLib.getDocument) {
-         throw new Error('PDF engine not initialized. Please check your internet connection.');
-       }
-       
-       const arrayBuffer = await file.arrayBuffer();
-       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+       async function handlePdfFile(file) {
+    try {
+      toggleScanLoader(true);
+      const textEl = document.getElementById('scanLoaderText');
+      
+      // Check if PDF.js is available
+      if (typeof pdfjsLib === 'undefined') {
+        throw new Error('PDF.js library not loaded. Please refresh the page and try again.');
+      }
+      
+      if (!pdfjsLib.getDocument) {
+        throw new Error('PDF engine not initialized. Please check your internet connection.');
+      }
+      
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       const totalPages = pdf.numPages;
 
-      const aggregatedLines = [];
+      if (textEl) textEl.textContent = `Processing ${totalPages} page(s)…`;
+      
+      const allText = [];
+      const allLines = [];
 
       for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-        if (textEl) textEl.textContent = `Reading PDF (${pageNum}/${totalPages})…`;
+        if (textEl) textEl.textContent = `Reading page ${pageNum}/${totalPages}…`;
         const page = await pdf.getPage(pageNum);
 
-                 // Try native text extraction first
-         const textContent = await page.getTextContent();
-         let pageText = '';
-         let lastY = null;
-         
-         // Better text extraction that preserves structure
-         for (const item of textContent.items) {
-           if (item.str && item.str.trim()) {
-             pageText += item.str + ' ';
-             // Add line break for items that appear to be on new lines
-             if (item.transform && item.transform[5] !== undefined) {
-               const y = item.transform[5];
-               if (lastY !== null && Math.abs(y - lastY) > 5) {
-                 pageText += '\n';
-               }
-               lastY = y;
-             }
-           }
-         }
-         pageText = pageText.trim();
-
-        if (!pageText) {
-          // Fallback: render to canvas and OCR the image
-          if (textEl) textEl.textContent = `OCR page (${pageNum}/${totalPages})…`;
-          const viewport = page.getViewport({ scale: 2 });
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          await page.render({ canvasContext: ctx, viewport }).promise;
-          const dataUrl = canvas.toDataURL('image/png');
-          const { data } = await Tesseract.recognize(dataUrl, 'eng');
-          pageText = (data && data.text) ? data.text : '';
+        // Method 1: Native text extraction with better structure
+        try {
+          const textContent = await page.getTextContent();
+          let pageText = '';
+          let lastY = null;
+          let lastX = null;
+          
+          // Sort items by Y position (top to bottom) then X position (left to right)
+          const sortedItems = textContent.items.sort((a, b) => {
+            const aY = a.transform ? a.transform[5] : 0;
+            const bY = b.transform ? b.transform[5] : 0;
+            if (Math.abs(aY - bY) < 5) {
+              // Same line, sort by X
+              const aX = a.transform ? a.transform[4] : 0;
+              const bX = b.transform ? b.transform[4] : 0;
+              return aX - bX;
+            }
+            return bY - aY; // Top to bottom
+          });
+          
+          for (const item of sortedItems) {
+            if (item.str && item.str.trim()) {
+              // Check if we need a line break
+              if (lastY !== null && item.transform && item.transform[5] !== undefined) {
+                const y = item.transform[5];
+                if (Math.abs(y - lastY) > 8) {
+                  pageText += '\n';
+                } else if (lastX !== null && item.transform && item.transform[4] !== undefined) {
+                  const x = item.transform[4];
+                  if (x - lastX > 20) {
+                    pageText += ' '; // Add space between words
+                  }
+                }
+              }
+              
+              pageText += item.str;
+              lastY = item.transform ? item.transform[5] : null;
+              lastX = item.transform ? item.transform[4] : null;
+            }
+          }
+          
+          if (pageText.trim()) {
+            allText.push(pageText.trim());
+            const lines = pageText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+            allLines.push(...lines);
+          }
+        } catch (err) {
+          console.log(`Text extraction failed for page ${pageNum}, trying OCR...`);
         }
 
-        if (pageText) {
-          const lines = pageText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-          aggregatedLines.push(...lines);
+        // Method 2: OCR fallback for pages with no text or poor text extraction
+        if (allText.length < pageNum) {
+          if (textEl) textEl.textContent = `OCR page ${pageNum}/${totalPages}…`;
+          try {
+            const viewport = page.getViewport({ scale: 2.5 }); // Higher resolution
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            
+            await page.render({ canvasContext: ctx, viewport }).promise;
+            
+            const dataUrl = canvas.toDataURL('image/png');
+            const { data } = await Tesseract.recognize(dataUrl, 'eng', {
+              logger: m => {
+                if (textEl && m.status === 'recognizing text') {
+                  textEl.textContent = `OCR page ${pageNum}/${totalPages} (${Math.round(m.progress * 100)}%)…`;
+                }
+              }
+            });
+            
+            if (data && data.text && data.text.trim()) {
+              allText.push(data.text.trim());
+              const lines = data.text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+              allLines.push(...lines);
+            }
+          } catch (ocrErr) {
+            console.error(`OCR failed for page ${pageNum}:`, ocrErr);
+          }
         }
       }
 
-      const topics = parseTextToTopics(aggregatedLines.join('\n'));
+      if (textEl) textEl.textContent = `Processing ${allLines.length} lines…`;
+      
+      const topics = parseTextToTopics(allLines.join('\n'));
       if (topics.length === 0) {
-        showNotification('No topics detected in the PDF.', 'warning');
+        showNotification('No topics detected in the PDF. Try a different file or check if the PDF contains readable text.', 'warning');
         return;
       }
+      
       addTopicsFromArray(topics);
-      showNotification(`Added ${topics.length} topic(s) from PDF`, 'success');
+      showNotification(`Added ${topics.length} topic(s) from ${totalPages} page(s)`, 'success');
     } catch (err) {
       console.error('PDF scan error:', err);
       const msg = (err && err.message) ? err.message : String(err);
