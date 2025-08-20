@@ -21,10 +21,10 @@ router.get('/admin/course/add', isAdmin, (req, res) => {
 
 // POST: Add new course
 router.post('/admin/course/add', isAdmin, async (req, res) => {
-  const { name, topics } = req.body;
+  const { name, topicName, topics } = req.body;
   const topicList = Array.isArray(topics) ? topics.map(t => ({ title: t })) : [{ title: topics }];
 
-  await Course.create({ name, topics: topicList });
+  await Course.create({ name, topicName, topics: topicList });
   res.redirect('/admin/courses');
 });
 

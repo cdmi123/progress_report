@@ -22,39 +22,53 @@
     <div class="card-body py-3">
       <form method="POST" action="/admin/course/add" id="courseForm">
         <div class="row g-2">
-          <div class="col-12">
-            <div class="form-floating mb-2">
-              <input type="text" name="name" class="form-control" id="courseName" placeholder="Course Name" required>
-              <label for="courseName">
-                <i class="bi bi-book-half me-1"></i> Course Name
-              </label>
+            <div class="col-12">
+              <div class="form-floating mb-2">
+                <input type="text" name="name" class="form-control" id="courseName" placeholder="Course Name" required>
+                <label for="courseName">
+                  <i class="bi bi-book-half me-1"></i> Course Name
+                </label>
+              </div>
             </div>
-          </div>
-          
-          <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <label class="form-label fw-semibold mb-0">
-                <i class="bi bi-list-ul me-1"></i> Topics
-              </label>
-              <button type="button" class="btn btn-sm btn-outline-primary" onclick="addTopic()">
-                <i class="bi bi-plus-circle me-1"></i> Add Topic
-              </button>
+
+            <!-- Topic Name Selection -->
+            <div class="col-12">
+              <div class="form-floating mb-2">
+                <input type="text" name="topicName" class="form-control" id="topicName" placeholder="Topic Name" required>
+                <label for="topicName">
+                  <i class="bi bi-tag me-1"></i> Topic Name
+                </label>
+              </div>
             </div>
-            
-            <div id="topicsContainer" class="mb-2">
-              <div class="topic-item mb-2">
-                <div class="input-group">
-                  <span class="input-group-text bg-light">
-                    <i class="bi bi-hash"></i>
-                  </span>
-                  <input type="text" name="topics" class="form-control topic-input" placeholder="Enter topic name" required>
-                  <button type="button" class="btn btn-outline-danger" onclick="removeTopic(this)" title="Remove topic">
-                    <i class="bi bi-trash"></i>
+
+            <div class="col-12">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="form-label fw-semibold mb-0">
+                  <i class="bi bi-list-ul me-1"></i> Topics
+                </label>
+                <div class="d-flex gap-2">
+                  <button type="button" class="btn btn-sm btn-outline-primary" onclick="addTopic()">
+                    <i class="bi bi-plus-circle me-1"></i> Add Topic
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-success" onclick="openScanModal()">
+                    <i class="bi bi-camera me-1"></i> Scan Options
                   </button>
                 </div>
               </div>
+              <div id="topicsContainer" class="mb-2">
+                <div class="topic-item mb-2">
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="bi bi-hash"></i>
+                    </span>
+                    <input type="text" name="topics" class="form-control topic-input" placeholder="Enter topic name" required>
+                    <button type="button" class="btn btn-outline-danger" onclick="removeTopic(this)" title="Remove topic">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
         </div>
         
         <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
@@ -89,6 +103,120 @@
     </div>
   </div>
 </div>
+
+<!-- Hidden file inputs for scanning -->
+<input type="file" id="scanImageInput" accept="image/*" style="display:none">
+<input type="file" id="scanPdfInput" accept="application/pdf" style="display:none">
+
+<!-- Scan Options Modal -->
+<div class="modal fade" id="scanModal" tabindex="-1" aria-labelledby="scanModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scanModalLabel">
+          <i class="bi bi-camera me-2"></i>Scan Options
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <!-- Camera Capture -->
+          <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="mb-3">
+                  <i class="bi bi-camera-video text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h6 class="card-title">Camera Capture</h6>
+                <p class="card-text small text-muted">Take a photo with your camera</p>
+                <button type="button" class="btn btn-primary btn-sm w-100" onclick="captureFromCamera()">
+                  <i class="bi bi-camera me-1"></i>Open Camera
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Image Upload -->
+          <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="mb-3">
+                  <i class="bi bi-image text-success" style="font-size: 2.5rem;"></i>
+                </div>
+                <h6 class="card-title">Upload Image</h6>
+                <p class="card-text small text-muted">Select an image file from your device</p>
+                <button type="button" class="btn btn-success btn-sm w-100" onclick="uploadImage()">
+                  <i class="bi bi-upload me-1"></i>Choose Image
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- PDF Upload -->
+          <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="mb-3">
+                  <i class="bi bi-file-earmark-pdf text-danger" style="font-size: 2.5rem;"></i>
+                </div>
+                <h6 class="card-title">Upload PDF</h6>
+                <p class="card-text small text-muted">Select a PDF file to extract topics</p>
+                <button type="button" class="btn btn-danger btn-sm w-100" onclick="uploadPdf()">
+                  <i class="bi bi-file-earmark-pdf me-1"></i>Choose PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Camera Preview Section -->
+        <div id="cameraSection" class="mt-4 d-none">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+              <h6 class="mb-0">
+                <i class="bi bi-camera me-2"></i>Camera Preview
+              </h6>
+            </div>
+            <div class="card-body text-center">
+              <video id="cameraVideo" autoplay playsinline class="img-fluid rounded" style="max-width: 100%; max-height: 300px;"></video>
+              <canvas id="cameraCanvas" style="display: none;"></canvas>
+              <div class="mt-3">
+                <button type="button" class="btn btn-primary me-2" onclick="capturePhoto()">
+                  <i class="bi bi-camera me-1"></i>Capture Photo
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeCamera()">
+                  <i class="bi bi-x-circle me-1"></i>Close Camera
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightweight loader -->
+<div id="scanLoader" class="position-fixed top-0 start-50 translate-middle-x mt-3 d-none" style="z-index: 1060">
+  <div class="alert alert-info d-flex align-items-center py-2 px-3 shadow-sm mb-0">
+    <div class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></div>
+    <div id="scanLoaderText">Scanning for topics…</div>
+  </div>
+</div>
+
+ <!-- Tesseract.js for OCR -->
+ <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+ <!-- PDF.js for PDF parsing -->
+ <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+ <script>
+   // Initialize PDF.js
+   if (typeof pdfjsLib !== 'undefined') {
+     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+   } else {
+     console.error('PDF.js failed to load from CDN');
+   }
+   
+ </script>
 
 <script>
   // Function to add a new topic input
@@ -193,4 +321,296 @@
       showNotification('Please fill in all topic fields', 'warning');
     }
   });
+
+  // Modal and scanning functions
+  function openScanModal() {
+    const modal = new bootstrap.Modal(document.getElementById('scanModal'));
+    modal.show();
+  }
+
+  // Camera functions
+  let stream = null;
+  
+  async function captureFromCamera() {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        } 
+      });
+      
+      const video = document.getElementById('cameraVideo');
+      video.srcObject = stream;
+      document.getElementById('cameraSection').classList.remove('d-none');
+      
+    } catch (err) {
+      console.error('Camera error:', err);
+      showNotification('Camera access denied. Please allow camera permissions.', 'warning');
+    }
+  }
+  
+  function capturePhoto() {
+    const video = document.getElementById('cameraVideo');
+    const canvas = document.getElementById('cameraCanvas');
+    const context = canvas.getContext('2d');
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0);
+    
+    canvas.toBlob(async (blob) => {
+      const file = new File([blob], 'camera-capture.jpg', { type: 'image/jpeg' });
+      closeCamera();
+      const modal = bootstrap.Modal.getInstance(document.getElementById('scanModal'));
+      modal.hide();
+      await handleImageFile(file);
+    }, 'image/jpeg', 0.8);
+  }
+  
+  function closeCamera() {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      stream = null;
+    }
+    document.getElementById('cameraSection').classList.add('d-none');
+  }
+  
+  // Upload functions
+  function uploadImage() {
+    const input = document.getElementById('scanImageInput');
+    input.value = '';
+    input.onchange = async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const modal = bootstrap.Modal.getInstance(document.getElementById('scanModal'));
+      modal.hide();
+      await handleImageFile(file);
+    };
+    input.click();
+  }
+  
+  function uploadPdf() {
+    const input = document.getElementById('scanPdfInput');
+    input.value = '';
+    input.onchange = async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const modal = bootstrap.Modal.getInstance(document.getElementById('scanModal'));
+      modal.hide();
+      await handlePdfFile(file);
+    };
+    input.click();
+  }
+
+
+
+  async function handleImageFile(file) {
+    try {
+      toggleScanLoader(true);
+      const { data } = await Tesseract.recognize(file, 'eng', {
+        logger: (m) => {
+          // Optional: could update loader text with m.progress
+        }
+      });
+      const text = (data && data.text) ? data.text : '';
+      if (!text.trim()) {
+        showNotification('No text detected. Try a clearer photo.', 'warning');
+        return;
+      }
+      const topics = parseTextToTopics(text);
+      if (topics.length === 0) {
+        showNotification('Could not find topic lines in the image.', 'warning');
+        return;
+      }
+      addTopicsFromArray(topics);
+      showNotification(`Added ${topics.length} topic(s) from scan`, 'success');
+    } catch (err) {
+      console.error('OCR error:', err);
+      showNotification('Scanning failed. Please try again.', 'danger');
+    } finally {
+      toggleScanLoader(false);
+    }
+  }
+
+     function parseTextToTopics(text) {
+     // Split by line and clean
+     const lines = text.split(/\r?\n/);
+     const cleaned = lines
+       .map(l => l.trim())
+       .filter(l => l.length > 0)
+       .map(l => l.replace(/\s{2,}/g, ' ')) // normalize whitespace
+       .filter(l => l.length >= 3)
+       .filter(l => /[A-Za-z]/.test(l));
+
+     // Smart topic extraction
+     const topics = [];
+     const seen = new Set();
+     
+     for (const line of cleaned) {
+       // Skip header/footer lines
+       if (line.toLowerCase().includes('page') || 
+           line.toLowerCase().includes('student sign') || 
+           line.toLowerCase().includes('supervisor sign') ||
+           line.toLowerCase().includes('date') ||
+           line.toLowerCase().includes('assignment sheet') ||
+           line.toLowerCase().includes('topic name') ||
+           line.toLowerCase().includes('no')) {
+         continue;
+       }
+       
+       // Handle numbered topics (e.g., "1. C Basic / Introduction")
+       let topic = line;
+       
+       // Remove common prefixes but keep structure
+       topic = topic.replace(/^[-•*\u2022\u25CF\u25E6\u2219]+\s*/, ''); // bullets
+       
+       // For numbered items, keep the number if it's part of a structured list
+       if (/^\d+\.\d+\s/.test(topic)) {
+         // Sub-topics like "1.1 Write a Program..."
+         topic = topic.replace(/^\d+\.\d+\s+/, ''); // Remove "1.1 " but keep content
+       } else if (/^\d+\.\s/.test(topic)) {
+         // Main topics like "1. C Basic / Introduction"
+         topic = topic.replace(/^\d+\.\s+/, ''); // Remove "1. " but keep content
+       }
+       
+       // Skip very short or generic lines
+       if (topic.length < 5 || 
+           topic.toLowerCase().includes('wap') && topic.length < 10) {
+         continue;
+       }
+       
+       // De-duplicate
+       const key = topic.toLowerCase().trim();
+       if (!seen.has(key) && key.length > 0) {
+         seen.add(key);
+         topics.push(topic.trim());
+       }
+     }
+     
+     return topics.slice(0, 100); // Increased limit for better coverage
+   }
+
+  function addTopicsFromArray(topicArray) {
+    const topicsContainer = document.getElementById('topicsContainer');
+    // If the first (and only) input is empty, fill it; otherwise append new rows
+    const existingInputs = topicsContainer.querySelectorAll('.topic-input');
+    let startIndex = 0;
+    if (existingInputs.length === 1 && existingInputs[0].value.trim() === '') {
+      existingInputs[0].value = topicArray[0] || '';
+      startIndex = 1;
+    }
+    for (let i = startIndex; i < topicArray.length; i++) {
+      const topicDiv = document.createElement('div');
+      topicDiv.className = 'topic-item mb-2';
+      topicDiv.innerHTML = `
+        <div class="input-group">
+          <span class="input-group-text bg-light">
+            <i class="bi bi-hash"></i>
+          </span>
+          <input type="text" name="topics" class="form-control topic-input" placeholder="Enter topic name" required>
+          <button type="button" class="btn btn-outline-danger" onclick="removeTopic(this)" title="Remove topic">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      `;
+      topicsContainer.appendChild(topicDiv);
+      const input = topicDiv.querySelector('.topic-input');
+      input.value = topicArray[i];
+    }
+  }
+
+  function toggleScanLoader(show) {
+    const el = document.getElementById('scanLoader');
+    const textEl = document.getElementById('scanLoaderText');
+    if (!el) return;
+    if (show) {
+      el.classList.remove('d-none');
+    } else {
+      el.classList.add('d-none');
+    }
+    if (textEl) textEl.textContent = 'Scanning for topics…';
+  }
+
+     async function handlePdfFile(file) {
+     try {
+       toggleScanLoader(true);
+       const textEl = document.getElementById('scanLoaderText');
+       
+       // Check if PDF.js is available
+       if (typeof pdfjsLib === 'undefined') {
+         throw new Error('PDF.js library not loaded. Please refresh the page and try again.');
+       }
+       
+       if (!pdfjsLib.getDocument) {
+         throw new Error('PDF engine not initialized. Please check your internet connection.');
+       }
+       
+       const arrayBuffer = await file.arrayBuffer();
+       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const totalPages = pdf.numPages;
+
+      const aggregatedLines = [];
+
+      for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+        if (textEl) textEl.textContent = `Reading PDF (${pageNum}/${totalPages})…`;
+        const page = await pdf.getPage(pageNum);
+
+                 // Try native text extraction first
+         const textContent = await page.getTextContent();
+         let pageText = '';
+         let lastY = null;
+         
+         // Better text extraction that preserves structure
+         for (const item of textContent.items) {
+           if (item.str && item.str.trim()) {
+             pageText += item.str + ' ';
+             // Add line break for items that appear to be on new lines
+             if (item.transform && item.transform[5] !== undefined) {
+               const y = item.transform[5];
+               if (lastY !== null && Math.abs(y - lastY) > 5) {
+                 pageText += '\n';
+               }
+               lastY = y;
+             }
+           }
+         }
+         pageText = pageText.trim();
+
+        if (!pageText) {
+          // Fallback: render to canvas and OCR the image
+          if (textEl) textEl.textContent = `OCR page (${pageNum}/${totalPages})…`;
+          const viewport = page.getViewport({ scale: 2 });
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          await page.render({ canvasContext: ctx, viewport }).promise;
+          const dataUrl = canvas.toDataURL('image/png');
+          const { data } = await Tesseract.recognize(dataUrl, 'eng');
+          pageText = (data && data.text) ? data.text : '';
+        }
+
+        if (pageText) {
+          const lines = pageText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+          aggregatedLines.push(...lines);
+        }
+      }
+
+      const topics = parseTextToTopics(aggregatedLines.join('\n'));
+      if (topics.length === 0) {
+        showNotification('No topics detected in the PDF.', 'warning');
+        return;
+      }
+      addTopicsFromArray(topics);
+      showNotification(`Added ${topics.length} topic(s) from PDF`, 'success');
+    } catch (err) {
+      console.error('PDF scan error:', err);
+      const msg = (err && err.message) ? err.message : String(err);
+      showNotification(`Failed to scan PDF: ${msg}`, 'danger');
+    } finally {
+      toggleScanLoader(false);
+    }
+  }
 </script>

@@ -23,15 +23,24 @@ async function generateAssignmentSheet(req, res) {
     );
     doc.pipe(res);
 
-    // ---------------- HEADER ----------------
-    doc.fontSize(18).font("Helvetica-Bold")
+    // ---------------- LOGO & HEADER ----------------
+    const fs = require('fs');
+    const path = require('path');
+    const logoPath = path.join(__dirname, '../public/logo.png');
+    if (fs.existsSync(logoPath)) {
+      doc.image(logoPath, doc.page.width / 2 - 40, doc.y, { width: 80 });
+      doc.moveDown(2.2);
+    }
+    doc.fontSize(18).fillColor('#1a237e').font("Helvetica-Bold")
       .text("CREATIVE MULTIMEDIA INSTITUTE", { align: "center" });
-    doc.moveDown(0.3);
-    doc.fontSize(14).font("Helvetica")
-      .text(`PROGRESS REPORT (${course.name})`, { align: "center" });
+    doc.moveDown(0.2);
+    doc.fontSize(14).fillColor('#333').font("Helvetica-Bold")
+      .text(`PROGRESS REPORT`, { align: "center" });
+    doc.fontSize(12).fillColor('#333').font("Helvetica")
+      .text(`Course: ${course.name}`, { align: "center" });
     doc.moveDown(0.3);
     doc.moveTo(40, doc.y).lineTo(550, doc.y).stroke();
-    doc.moveDown(1.5);
+    doc.moveDown(1.2);
 
     // ---------------- TABLE ----------------
     const colWidths = { no: 40, topic: 240, date: 80, studentSign: 80, supervisorSign: 80 };
@@ -81,27 +90,64 @@ async function generateAssignmentSheet(req, res) {
       return rowHeight; // return height so next row can adjust Y
     }
 
-    // Header row
-    let y = doc.y;
-    let headerHeight = drawRow(y, {
-      no: "No",
-      topic: "Topic Name",
-      date: "Date",
-      studentSign: "Student Sign"
-    }, true);
-    y += headerHeight;
+  // Header row with colored background and supervisor sign col
+  let y = doc.y;
+  doc.save();
+  doc.rect(40, y, 520, 25).fill('#bbdefb');
+  doc.restore();
+  doc.font('Helvetica-Bold').fontSize(10).fillColor('#1a237e');
+  doc.text("No", 40, y + 7, { width: 40, align: "center" });
+  doc.text("Topic Name", 80 + 5, y + 7, { width: 240 - 10, align: "left" });
+  doc.text("Date", 280 + 40, y + 7, { width: 80, align: "center" });
+  doc.text("Student Sign", 400, y + 7, { width: 80, align: "center" });
+  doc.text("Supervisor Sign", 480, y + 7, { width: 80, align: "center" });
+  // Draw header cell borders
+  doc.rect(40, y, 40, 25).stroke();
+  doc.rect(80, y, 240, 25).stroke();
+  doc.rect(320, y, 80, 25).stroke();
+  doc.rect(400, y, 80, 25).stroke();
+  doc.rect(480, y, 80, 25).stroke();
+  y += 25;
 
-    // Data rows
+    // Data rows with supervisor sign box
     if (report?.topics?.length > 0) {
       report.topics.forEach((t, i) => {
-        let rowHeight = drawRow(y, {
-          no: i + 1,
-          topic: t.topicTitle,
-          date: t.date || "----",
-          signatureData: student.signatureData,
-
-        }, false, i % 2 === 0);
-        y += rowHeight;
+        // Row shading
+        if (i % 2 === 0) {
+          doc.save();
+          doc.rect(40, y, 520, 25).fill('#e3f2fd');
+          doc.restore();
+        }
+        // Borders
+        doc.rect(40, y, 40, 25).stroke();
+        doc.rect(80, y, 240, 25).stroke();
+        doc.rect(320, y, 80, 25).stroke();
+        doc.rect(400, y, 80, 25).stroke();
+        doc.rect(480, y, 80, 25).stroke();
+        // Data
+        doc.font('Helvetica').fontSize(10).fillColor('#222');
+        doc.text(i + 1, 40, y + 7, { width: 40, align: "center" });
+        doc.text(t.topicTitle, 80 + 5, y + 7, { width: 240 - 10, align: "left" });
+        doc.text(t.date || "----", 320, y + 7, { width: 80, align: "center" });
+        // Student Signature
+        if (student.signatureData) {
+          try {
+            let base64Data = student.signatureData.includes(",")
+              ? student.signatureData.split(",")[1]
+              : student.signatureData;
+            const imgBuffer = Buffer.from(base64Data, "base64");
+            doc.image(imgBuffer, 400 + 10, y + 3, { width: 60, height: 18 });
+          } catch {
+            doc.text("----", 400, y + 7, { width: 80, align: "center" });
+          }
+        } else {
+          doc.text("----", 400, y + 7, { width: 80, align: "center" });
+        }
+        // Supervisor Sign box
+        doc.save();
+        doc.rect(480 + 10, y + 5, 60, 15).stroke('#90caf9');
+        doc.restore();
+        y += 25;
       });
     } else {
       doc.text("No topics found", 50, y + 10);
