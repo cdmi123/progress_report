@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -17,13 +18,13 @@
       --success: #10b981;
       --warning: #f59e0b;
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -31,13 +32,13 @@
       padding: 20px 0;
       color: var(--dark);
     }
-    
+
     .report-wrapper {
       max-width: 1000px;
       margin: 0 auto;
       padding: 0 20px;
     }
-    
+
     .report-container {
       background: rgba(255, 255, 255, 0.95);
       border-radius: 24px;
@@ -45,14 +46,14 @@
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
       backdrop-filter: blur(10px);
     }
-    
+
     .report-header {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       padding: 40px;
       position: relative;
       overflow: hidden;
     }
-    
+
     .report-header::before {
       content: "";
       position: absolute;
@@ -63,7 +64,7 @@
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.1);
     }
-    
+
     .report-header::after {
       content: "";
       position: absolute;
@@ -74,7 +75,7 @@
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.05);
     }
-    
+
     .report-title {
       color: white;
       font-size: 2.5rem;
@@ -83,14 +84,14 @@
       position: relative;
       z-index: 2;
     }
-    
+
     .report-subtitle {
       color: rgba(255, 255, 255, 0.8);
       font-size: 1.1rem;
       position: relative;
       z-index: 2;
     }
-    
+
     .student-info {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -98,7 +99,7 @@
       padding: 30px 40px;
       background: var(--light);
     }
-    
+
     .info-card {
       background: white;
       border-radius: 16px;
@@ -106,12 +107,12 @@
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    
+
     .info-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
-    
+
     .info-label {
       font-size: 0.875rem;
       color: #64748b;
@@ -119,25 +120,25 @@
       display: flex;
       align-items: center;
     }
-    
+
     .info-label i {
       margin-right: 8px;
       color: var(--primary);
     }
-    
+
     .info-value {
       font-size: 1.125rem;
       font-weight: 700;
       color: var(--dark);
     }
-    
+
     .actions {
       padding: 30px 40px;
       display: flex;
       justify-content: flex-end;
       gap: 15px;
     }
-    
+
     .btn-action {
       padding: 12px 24px;
       border-radius: 12px;
@@ -147,39 +148,39 @@
       text-decoration: none;
       transition: all 0.3s;
     }
-    
+
     .btn-pdf {
       background: linear-gradient(135deg, var(--success), #059669);
       color: white;
     }
-    
+
     .btn-pdf:hover {
       transform: translateY(-3px);
       box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
       color: white;
     }
-    
+
     .btn-print {
       background: white;
       color: var(--primary);
       border: 2px solid var(--primary);
     }
-    
+
     .btn-print:hover {
       background: var(--primary);
       color: white;
       transform: translateY(-3px);
       box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
     }
-    
+
     .btn-action i {
       margin-right: 8px;
     }
-    
+
     .topics-section {
       padding: 0 40px 30px;
     }
-    
+
     .section-heading {
       font-size: 1.5rem;
       font-weight: 700;
@@ -188,7 +189,7 @@
       position: relative;
       padding-left: 20px;
     }
-    
+
     .section-heading::before {
       content: "";
       position: absolute;
@@ -200,20 +201,20 @@
       background: linear-gradient(to bottom, var(--primary), var(--secondary));
       border-radius: 3px;
     }
-    
+
     .topics-table {
       background: white;
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
-    
+
     .table-custom {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
     }
-    
+
     .table-custom thead th {
       background: var(--light);
       color: var(--dark);
@@ -225,38 +226,38 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-    
+
     .table-custom tbody tr {
       border-bottom: 1px solid #e2e8f0;
       transition: background-color 0.2s;
     }
-    
+
     .table-custom tbody tr:last-child {
       border-bottom: none;
     }
-    
+
     .table-custom tbody tr:hover {
       background-color: rgba(99, 102, 241, 0.03);
     }
-    
+
     .table-custom td {
       padding: 18px 15px;
       text-align: center;
       vertical-align: middle;
     }
-    
+
     .topic-name {
       text-align: left;
       font-weight: 500;
     }
-    
+
     .topic-checkbox {
       width: 20px;
       height: 20px;
       cursor: pointer;
       accent-color: var(--primary);
     }
-    
+
     .date-input {
       width: 120px;
       padding: 8px 12px;
@@ -265,13 +266,13 @@
       text-align: center;
       font-size: 0.875rem;
     }
-    
+
     .signature-img {
       max-width: 70px;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-    
+
     .report-footer {
       background: var(--light);
       padding: 25px 40px;
@@ -281,115 +282,115 @@
       flex-wrap: wrap;
       gap: 15px;
     }
-    
+
     .footer-info p {
       margin: 0;
       font-size: 0.875rem;
     }
-    
+
     .footer-info strong {
       color: var(--dark);
     }
-    
+
     .footer-date {
       color: #64748b;
       font-style: italic;
     }
-    
-         .no-print {
-       display: inline-block;
-     }
-     
-     /* Fix Modal Positioning and Z-Index */
-     .modal {
-       z-index: 1055 !important;
-     }
-     
-     .modal-backdrop {
-       z-index: 1050 !important;
-     }
-     
-     .modal-dialog {
-       margin: 1.75rem auto !important;
-       max-width: 500px !important;
-     }
-     
-     /* Ensure modal is centered and visible */
-     .modal.show {
-       display: block !important;
-       background-color: rgba(0, 0, 0, 0.5) !important;
-     }
-     
-     /* Fix any conflicting z-index from custom styles */
-     .report-container {
-       position: relative;
-       z-index: 1;
-     }
-     
-     /* Additional modal fixes */
-     .modal.fade .modal-dialog {
-       transition: transform 0.3s ease-out;
-       transform: translate(0, -50px);
-     }
-     
-     .modal.show .modal-dialog {
-       transform: none;
-     }
-    
+
+    .no-print {
+      display: inline-block;
+    }
+
+    /* Fix Modal Positioning and Z-Index */
+    .modal {
+      z-index: 1055 !important;
+    }
+
+    .modal-backdrop {
+      z-index: 1050 !important;
+    }
+
+    .modal-dialog {
+      margin: 1.75rem auto !important;
+      max-width: 500px !important;
+    }
+
+    /* Ensure modal is centered and visible */
+    .modal.show {
+      display: block !important;
+      background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Fix any conflicting z-index from custom styles */
+    .report-container {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Additional modal fixes */
+    .modal.fade .modal-dialog {
+      transition: transform 0.3s ease-out;
+      transform: translate(0, -50px);
+    }
+
+    .modal.show .modal-dialog {
+      transform: none;
+    }
+
     /* Print Styles - A4 Paper Size */
     @media print {
       @page {
         size: A4;
-        margin: 1cm;
+        margin: 0.5cm;
       }
-      
+
       body {
         background: white;
         padding: 0;
         margin: 0;
       }
-      
+
       .report-wrapper {
         max-width: 100%;
         padding: 0;
       }
-      
+
       .report-container {
         box-shadow: none;
         border-radius: 0;
         overflow: visible;
       }
-      
+
       .report-header {
         background: var(--primary) !important;
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
-        padding: 20px;
+        padding: 15px 20px;
         position: relative;
       }
-      
+
       .report-header::before,
       .report-header::after {
         display: none;
       }
-      
+
       .report-title {
-        font-size: 1.8rem;
-        margin-bottom: 5px;
+        font-size: 1.5rem;
+        margin-bottom: 2px;
       }
-      
+
       .report-subtitle {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
       }
-      
+
       .student-info {
         grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
-        padding: 20px;
+        gap: 10px;
+        padding: 10px 20px;
         background: white;
         border-bottom: 1px solid #e2e8f0;
       }
-      
+
       .info-card {
         background: white;
         box-shadow: none;
@@ -397,124 +398,124 @@
         border-radius: 0;
         border-bottom: 1px solid #f1f5f9;
       }
-      
+
       .info-card:hover {
         transform: none;
         box-shadow: none;
       }
-      
+
       .info-label {
         font-size: 0.75rem;
         margin-bottom: 2px;
       }
-      
+
       .info-value {
         font-size: 0.9rem;
       }
-      
+
       .actions {
         display: none;
       }
-      
+
       .topics-section {
-        padding: 20px;
+        padding: 10px 20px;
       }
-      
+
       .section-heading {
-        font-size: 1.2rem;
-        margin-bottom: 15px;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
       }
-      
+
       .topics-table {
         box-shadow: none;
         border-radius: 0;
         border: 1px solid #e2e8f0;
       }
-      
+
       .table-custom {
-        font-size: 0.8rem;
-      }
-      
-      .table-custom thead th {
-        padding: 10px 8px;
         font-size: 0.75rem;
+      }
+
+      .table-custom thead th {
+        padding: 6px 4px;
+        font-size: 0.7rem;
         background: #f8fafc;
       }
-      
+
       .table-custom td {
-        padding: 10px 8px;
+        padding: 6px 4px;
       }
-      
+
       .date-input {
         width: 80px;
         padding: 4px 8px;
         font-size: 0.75rem;
         border: 1px solid #d1d5db;
       }
-      
+
       .signature-img {
         max-width: 50px;
       }
-      
+
       .report-footer {
         background: white;
         padding: 15px 20px;
         border-top: 1px solid #e2e8f0;
       }
-      
+
       .footer-info p {
         font-size: 0.75rem;
       }
-      
+
       .footer-date {
         font-size: 0.7rem;
       }
-      
+
       .no-print {
         display: none !important;
       }
     }
-    
+
     @media (max-width: 768px) {
       .report-title {
         font-size: 2rem;
       }
-      
+
       .student-info {
         grid-template-columns: 1fr;
         padding: 20px;
       }
-      
+
       .actions {
         padding: 20px;
         justify-content: center;
       }
-      
+
       .topics-section {
         padding: 0 20px 20px;
       }
-      
+
       .section-heading {
         font-size: 1.25rem;
       }
-      
+
       .table-custom {
         font-size: 0.875rem;
       }
-      
+
       .table-custom thead th,
       .table-custom td {
         padding: 12px 8px;
       }
-      
+
       .date-input {
         width: 100px;
       }
-      
+
       .signature-img {
         max-width: 50px;
       }
-      
+
       .report-footer {
         padding: 20px;
         flex-direction: column;
@@ -523,6 +524,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="report-wrapper">
     <div class="report-container" id="printableArea">
@@ -531,52 +533,64 @@
         <h1 class="report-title">Progress Report</h1>
         <p class="report-subtitle">Academic Performance Tracking</p>
       </div>
-      
+
       <!-- Student Information -->
       <div class="student-info">
         <div class="info-card">
           <div class="info-label">
             <i class="bi bi-person-fill"></i> Student Name
           </div>
-          <div class="info-value"><%= student.name %></div>
+          <div class="info-value">
+            <%= student.name %>
+          </div>
         </div>
-        
+
         <div class="info-card">
           <div class="info-label">
             <i class="bi bi-hash"></i> Registration No.
           </div>
-          <div class="info-value"><%= student.regNo %></div>
+          <div class="info-value">
+            <%= student.regNo %>
+          </div>
         </div>
-        
+
         <div class="info-card">
           <div class="info-label">
             <i class="bi bi-telephone-fill"></i> Contact
           </div>
-          <div class="info-value"><%= student.contact %></div>
+          <div class="info-value">
+            <%= student.contact %>
+          </div>
         </div>
-        
+
         <div class="info-card">
           <div class="info-label">
             <i class="bi bi-book"></i> Course
           </div>
-          <div class="info-value"><%= course.name %></div>
+          <div class="info-value">
+            <%= course.name %>
+          </div>
         </div>
-        
+
         <div class="info-card">
           <div class="info-label">
             <i class="bi bi-building"></i> Faculty
           </div>
-          <div class="info-value"><%= student.facultyName %></div>
+          <div class="info-value">
+            <%= student.facultyName ? student.facultyName.name : 'N/A' %>
+          </div>
         </div>
-        
+
         <div class="info-card">
           <div class="info-label">
             <i class="bi bi-calendar-range"></i> Duration
           </div>
-          <div class="info-value"><%= student.startDate %> - <%= student.endDate %></div>
+          <div class="info-value">
+            <%= student.startDate %> - <%= student.endDate %>
+          </div>
         </div>
       </div>
-      
+
       <!-- Action Buttons -->
       <div class="actions no-print">
         <a href="/report/<%= student._id %>/pdf" class="btn-action btn-pdf">
@@ -585,20 +599,21 @@
         <button onclick="printReport()" class="btn-action btn-print">
           <i class="bi bi-printer"></i> Print Report
         </button>
-          <% if (course && (course.name === 'Datascience' || course.name === 'Dataanalytics')) { %>
-            <button type="button" class="btn-action btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addTopicModal">
-              <i class="bi bi-plus-circle me-1"></i>Add New Topic
-            </button>
+        <% if (course && (course.name==='Datascience' || course.name==='Dataanalytics' )) { %>
+          <button type="button" class="btn-action btn-primary btn-sm" data-bs-toggle="modal"
+            data-bs-target="#addTopicModal">
+            <i class="bi bi-plus-circle me-1"></i>Add New Topic
+          </button>
           <% } %>
       </div>
-      
+
       <!-- Topics Section -->
       <div class="topics-section">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h3 class="section-heading mb-0">Topics Covered</h3>
-         
+
         </div>
-        
+
         <div class="topics-table">
           <table class="table-custom">
             <thead>
@@ -614,37 +629,43 @@
             <tbody>
               <% report.topics.forEach((topic, i)=> { %>
                 <tr>
-                  <td><%= i + 1 %></td>
                   <td>
-                    <input type="checkbox" class="topic-checkbox" data-index="<%= i %>" <%=topic.isChecked ? 'checked' : '' %> <%= topic.isChecked ? 'disabled' : '' %> />
+                    <%= i + 1 %>
+                  </td>
+                  <td>
+                    <input type="checkbox" class="topic-checkbox" data-index="<%= i %>" <%=topic.isChecked ? 'checked'
+                      : '' %>
+                    <%= topic.isChecked ? 'disabled' : '' %> />
                   </td>
                   <td class="topic-name">
                     <%= topic.topicTitle %>
-                    <% if (topic.addedBy === 'student') { %>
-                      <span class="badge bg-warning text-dark ms-2" style="font-size: 0.7rem;">
-                        <i class="bi bi-person-plus"></i> Student Added
-                      </span>
-                    <% } %>
+                      <% if (topic.addedBy==='student' ) { %>
+                        <span class="badge bg-warning text-dark ms-2" style="font-size: 0.7rem;">
+                          <i class="bi bi-person-plus"></i> Student Added
+                        </span>
+                        <% } %>
                   </td>
                   <td>
-                    <% if (topic.addedBy === 'student') { %>
+                    <% if (topic.addedBy==='student' ) { %>
                       <span class="text-success">
                         <i class="bi bi-person"></i> Student
                       </span>
-                    <% } else { %>
-                      <span class="text-primary">
-                        <i class="bi bi-shield-check"></i> Admin
-                      </span>
-                    <% } %>
+                      <% } else { %>
+                        <span class="text-primary">
+                          <i class="bi bi-shield-check"></i> Admin
+                        </span>
+                        <% } %>
                   </td>
                   <td>
-                    <input type="text" id="date-<%= i %>" class="date-input" value="<%= topic.date %>" readonly placeholder="DD/MM/YYYY" <%=topic.isChecked ? 'disabled' : '' %>/>
+                    <input type="text" id="date-<%= i %>" class="date-input" value="<%= topic.date %>" readonly
+                      placeholder="DD/MM/YYYY" <%=topic.isChecked ? 'disabled' : '' %>/>
                   </td>
                   <td>
-                    <img id="signaturePreview" src="<%= student.signatureData %>" alt="Signature" class="signature-img" style="<%= topic.isChecked ? '' : 'display: none;' %>" />
+                    <img id="signaturePreview" src="<%= student.signatureData %>" alt="Signature" class="signature-img"
+                      style="<%= topic.isChecked ? '' : 'display: none;' %>" />
                   </td>
                 </tr>
-              <% }); %>
+                <% }); %>
             </tbody>
           </table>
         </div>
@@ -666,7 +687,8 @@
                   <label for="newTopicTitle" class="form-label">Topic Title</label>
                   <input type="text" class="form-control" id="newTopicTitle" placeholder="Enter topic title" required>
                   <div class="form-text">
-                    <i class="bi bi-info-circle me-1"></i>This topic will be added to your course and shared with other students.
+                    <i class="bi bi-info-circle me-1"></i>This topic will be added to your course and shared with other
+                    students.
                   </div>
                 </div>
               </form>
@@ -680,12 +702,15 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Footer -->
       <div class="report-footer">
         <div class="footer-info">
-          <p><strong>Faculty:</strong> <%= student.facultyName %></p>
-          <p class="footer-date">Generated on: <%= new Date().toLocaleDateString('en-IN') %></p>
+          <p><strong>Faculty:</strong>
+            <%= student.facultyName ? student.facultyName.name : 'N/A' %>
+          </p>
+          <p class="footer-date">Generated on: <%= new Date().toLocaleDateString('en-IN') %>
+          </p>
         </div>
       </div>
     </div>
@@ -693,7 +718,7 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
+
   <!-- Alternative Bootstrap CDN if first one fails -->
   <script>
     if (typeof bootstrap === 'undefined') {
@@ -703,12 +728,12 @@
       document.head.appendChild(script);
     }
   </script>
-  
+
   <!-- JS: Checkbox Date Auto-Fill & Add Topic -->
   <script>
     const reportId = "<%= report._id %>";
     const courseId = "<%= course._id %>";
-    
+
     // Ensure modal is attached to <body> to avoid clipping/stacking issues
     document.addEventListener('DOMContentLoaded', function () {
       const modalEl = document.getElementById('addTopicModal');
@@ -716,27 +741,27 @@
         document.body.appendChild(modalEl);
       }
     });
-    
+
     // Get today's date in DD/MM/YYYY format
     function getCurrentDate() {
       const d = new Date();
       return d.toLocaleDateString('en-GB').split('/').map(n => n.padStart(2, '0')).join('/');
     }
-    
+
     // Print Report Function
     function printReport() {
       window.print();
     }
-    
+
     // Add new topic function
     async function addNewTopic() {
       const topicTitle = document.getElementById('newTopicTitle').value.trim();
-      
+
       if (!topicTitle) {
         alert('Please enter a topic title');
         return;
       }
-      
+
       try {
         const response = await fetch('/student/add-topic', {
           method: 'POST',
@@ -746,9 +771,9 @@
             topicTitle: topicTitle
           })
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
           alert('✅ Topic added successfully!');
           // Close modal using Bootstrap (with safe fallback)
@@ -785,9 +810,9 @@
         alert('🚫 Server error: ' + error.message);
       }
     }
-    
+
     // Removed custom open/close helpers to avoid conflicts with Bootstrap
-    
+
     // Add event listeners to all checkboxes
     document.querySelectorAll('.topic-checkbox').forEach(cb => {
       cb.addEventListener('click', async function (e) {
@@ -850,4 +875,5 @@
     });
   </script>
 </body>
+
 </html>

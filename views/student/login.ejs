@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +15,7 @@
       position: relative;
       overflow-x: hidden;
     }
+
     .bg-blur {
       position: fixed;
       top: 0;
@@ -26,6 +28,7 @@
       filter: blur(10px) brightness(0.7);
       z-index: 0;
     }
+
     .login-container {
       max-width: 450px;
       width: 90%;
@@ -34,20 +37,23 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       background: rgba(255, 255, 255, 0.25);
       backdrop-filter: blur(8px) saturate(120%);
-      border: 1.5px solid rgba(255,255,255,0.3);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
       transition: transform 0.3s ease, box-shadow 0.3s;
-      animation: fadeInUp 1s cubic-bezier(.39,.575,.565,1) both;
+      animation: fadeInUp 1s cubic-bezier(.39, .575, .565, 1) both;
     }
+
     @keyframes fadeInUp {
       0% {
         opacity: 0;
         transform: translateY(40px);
       }
+
       100% {
         opacity: 1;
         transform: translateY(0);
       }
     }
+
     /* ...existing CSS... */
     .login-header h1 {
       color: var(--primary-color);
@@ -56,6 +62,7 @@
       letter-spacing: 1px;
       text-shadow: 0 2px 8px rgba(78, 115, 223, 0.08);
     }
+
     .btn-login {
       background: linear-gradient(90deg, var(--primary-color), #2e59d9 80%);
       border: none;
@@ -67,31 +74,36 @@
       transition: all 0.3s;
       box-shadow: 0 2px 8px rgba(78, 115, 223, 0.10);
     }
+
     .btn-login:hover {
       background: linear-gradient(90deg, #2e59d9, var(--primary-color) 80%);
       transform: translateY(-2px) scale(1.03);
       box-shadow: 0 8px 24px rgba(78, 115, 223, 0.18);
     }
+
     .form-control {
       border-radius: 10px;
       border: 1px solid #e3e6f0;
       padding: 12px 15px;
       height: auto;
-      background: rgba(255,255,255,0.7);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
       transition: box-shadow 0.2s;
     }
+
     .form-control:focus {
       box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.18);
       border-color: var(--primary-color);
       background: #fff;
     }
+
     /* Responsive */
     @media (max-width: 576px) {
       .login-container {
         padding: 16px;
         border-radius: 12px;
       }
+
       .login-header h1 {
         font-size: 1.3rem;
       }
@@ -108,13 +120,13 @@
       --light-color: #f8f9fc;
       --dark-color: #5a5c69;
     }
-    
+
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       min-height: 100vh;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
+
     .login-container {
       max-width: 450px;
       width: 90%;
@@ -124,43 +136,43 @@
       background-color: white;
       transition: transform 0.3s ease;
     }
-    
+
     .login-container:hover {
       transform: translateY(-5px);
     }
-    
+
     .login-header {
       text-align: center;
       margin-bottom: 30px;
     }
-    
+
     .login-header h1 {
       color: var(--primary-color);
       font-weight: 700;
       margin-bottom: 10px;
     }
-    
+
     .login-header p {
       color: var(--secondary-color);
       font-size: 0.9rem;
     }
-    
+
     .form-floating {
       margin-bottom: 20px;
     }
-    
+
     .form-control {
       border-radius: 10px;
       border: 1px solid #e3e6f0;
       padding: 12px 15px;
       height: auto;
     }
-    
+
     .form-control:focus {
       box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
       border-color: var(--primary-color);
     }
-    
+
     .btn-login {
       background: linear-gradient(to right, var(--primary-color), #2e59d9);
       border: none;
@@ -171,13 +183,13 @@
       letter-spacing: 1px;
       transition: all 0.3s;
     }
-    
+
     .btn-login:hover {
       background: linear-gradient(to right, #2e59d9, var(--primary-color));
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(78, 115, 223, 0.4);
     }
-    
+
     .login-options {
       display: flex;
       justify-content: space-between;
@@ -185,24 +197,24 @@
       margin: 20px 0;
       font-size: 0.9rem;
     }
-    
+
     .login-options a {
       color: var(--primary-color);
       text-decoration: none;
       transition: color 0.3s;
     }
-    
+
     .login-options a:hover {
       color: #2e59d9;
       text-decoration: underline;
     }
-    
+
     .divider {
       display: flex;
       align-items: center;
       margin: 20px 0;
     }
-    
+
     .divider::before,
     .divider::after {
       content: '';
@@ -210,20 +222,20 @@
       height: 1px;
       background-color: #e3e6f0;
     }
-    
+
     .divider span {
       padding: 0 15px;
       color: var(--secondary-color);
       font-size: 0.85rem;
     }
-    
+
     .social-login {
       display: flex;
       justify-content: center;
       gap: 15px;
       margin-bottom: 20px;
     }
-    
+
     .social-btn {
       width: 40px;
       height: 40px;
@@ -236,44 +248,44 @@
       color: var(--secondary-color);
       transition: all 0.3s;
     }
-    
+
     .social-btn:hover {
       background-color: #f8f9fc;
       transform: translateY(-3px);
     }
-    
+
     .signup-link {
       text-align: center;
       margin-top: 20px;
       color: var(--secondary-color);
       font-size: 0.9rem;
     }
-    
+
     .signup-link a {
       color: var(--primary-color);
       font-weight: 600;
       text-decoration: none;
     }
-    
+
     .signup-link a:hover {
       text-decoration: underline;
     }
-    
+
     .alert {
       border-radius: 10px;
       padding: 12px 15px;
       margin-bottom: 20px;
     }
-    
+
     @media (max-width: 576px) {
       .login-container {
         padding: 20px;
       }
-      
+
       .login-header h1 {
         font-size: 1.5rem;
       }
-      
+
       .login-options {
         flex-direction: column;
         gap: 10px;
@@ -281,9 +293,11 @@
     }
   </style>
 </head>
+
 <body>
   <div class="bg-blur"></div>
-  <div class="container d-flex align-items-center justify-content-center min-vh-100" style="position:relative; z-index:1;">
+  <div class="container d-flex align-items-center justify-content-center min-vh-100"
+    style="position:relative; z-index:1;">
     <div class="login-container">
       <div class="login-header">
         <div class="mb-3">
@@ -292,65 +306,79 @@
         <h1>Welcome Back</h1>
         <p>Sign in to continue to your student portal</p>
       </div>
-      
-      <% if (typeof error !== 'undefined') { %>
-        <div class="alert alert-danger d-flex align-items-center" role="alert">
-          <i class="bi bi-exclamation-triangle-fill me-2"></i>
-          <div><%= error %></div>
-        </div>
-      <% } %>
-      
-      <form method="POST" action="/student/login">
-        <div class="form-floating">
-          <input type="tel" name="contact" class="form-control" id="floatingContact" placeholder="Phone Number" required>
-          <label for="floatingContact"><i class="bi bi-phone me-2"></i>Phone Number</label>
-        </div>
-        
-        <div class="form-floating">
-          <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password" required>
-          <label for="floatingPassword"><i class="bi bi-lock me-2"></i>Password</label>
-        </div>
-        
-        <div class="login-options">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="rememberMe">
-            <label class="form-check-label" for="rememberMe">
-              Remember Me
-            </label>
+
+      <% if (locals.success) { %>
+        <div class="alert alert-success d-flex align-items-center" role="alert">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <div>
+            <%= Array.isArray(success) ? success[0] : success %>
           </div>
-          <a href="/forgot-password">Forgot Password?</a>
         </div>
-        
-        <button type="submit" class="btn btn-primary w-100 btn-login">
-          <i class="bi bi-box-arrow-in-right me-2"></i>Login
-        </button>
-      </form>
-      
-      <div class="divider">
-        <span>OR</span>
-      </div>
-      
-      <div class="social-login">
-        <button class="social-btn">
-          <i class="bi bi-google"></i>
-        </button>
-        <button class="social-btn">
-          <i class="bi bi-facebook"></i>
-        </button>
-        <button class="social-btn">
-          <i class="bi bi-twitter"></i>
-        </button>
-        <button class="social-btn">
-          <i class="bi bi-microsoft"></i>
-        </button>
-      </div>
-      
-      <div class="signup-link">
-        Don't have an account? <a href="/student/register">Sign Up</a>
-      </div>
+        <% } %>
+
+          <% if (locals.error) { %>
+            <div class="alert alert-danger d-flex align-items-center" role="alert">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <div>
+                <%= Array.isArray(error) ? error[0] : error %>
+              </div>
+            </div>
+            <% } %>
+
+              <form method="POST" action="/student/login">
+                <div class="form-floating">
+                  <input type="tel" name="contact" class="form-control" id="floatingContact" placeholder="Phone Number"
+                    required autocomplete="username">
+                  <label for="floatingContact"><i class="bi bi-phone me-2"></i>Phone Number</label>
+                </div>
+
+                <div class="form-floating">
+                  <input type="password" name="password" class="form-control" id="floatingPassword"
+                    placeholder="Password" required autocomplete="current-password">
+                  <label for="floatingPassword"><i class="bi bi-lock me-2"></i>Password</label>
+                </div>
+
+                <div class="login-options">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">
+                      Remember Me
+                    </label>
+                  </div>
+                  <a href="/forgot-password">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-login">
+                  <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                </button>
+              </form>
+
+              <div class="divider">
+                <span>OR</span>
+              </div>
+
+              <div class="social-login">
+                <button class="social-btn">
+                  <i class="bi bi-google"></i>
+                </button>
+                <button class="social-btn">
+                  <i class="bi bi-facebook"></i>
+                </button>
+                <button class="social-btn">
+                  <i class="bi bi-twitter"></i>
+                </button>
+                <button class="social-btn">
+                  <i class="bi bi-microsoft"></i>
+                </button>
+              </div>
+
+              <div class="signup-link">
+                Don't have an account? <a href="/student/register">Sign Up</a>
+              </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

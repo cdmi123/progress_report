@@ -1,107 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Student Progress Report</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body { padding: 30px; background: #f8f9fa; }
+    body {
+      padding: 15px;
+      background: #f8f9fa;
+      font-size: 14px;
+    }
+
     .report-box {
-      background: #fff; padding: 30px;
-      border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
+
     .section-title {
-      font-weight: 600; font-size: 18px;
-      margin-top: 30px; border-bottom: 2px solid #0d6efd; padding-bottom: 5px;
+      font-weight: 600;
+      font-size: 16px;
+      margin-top: 15px;
+      border-bottom: 2px solid #0d6efd;
+      padding-bottom: 3px;
     }
-    .table th, .table td {
-      text-align: center; vertical-align: middle;
-    }
-    .date-field {
-      width: 120px;
+
+    .table th,
+    .table td {
       text-align: center;
+      vertical-align: middle;
+      padding: 6px;
+    }
+
+    .date-field {
+      width: 100px;
+      text-align: center;
+      font-size: 12px;
     }
   </style>
 </head>
+
 <body>
 
-<div class="container report-box">
-  <h2 class="text-center mb-4">Student Progress Report</h2>
+  <div class="container report-box">
+    <h2 class="text-center mb-4">Student Progress Report</h2>
 
-  <div class="row mb-3">
-    <div class="col-md-6"><strong>Name:</strong> <%= student.name %></div>
-    <div class="col-md-6"><strong>Contact:</strong> <%= student.contact %></div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-md-4"><strong>Course:</strong> <%= course.name %></div>
-    <div class="col-md-4"><strong>Reg No:</strong> <%= student.regNo %></div>
-    <div class="col-md-4"><strong>Faculty:</strong> <%= student.facultyName %></div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-md-6"><strong>Start Date:</strong> <%= student.startDate %></div>
-    <div class="col-md-6"><strong>End Date:</strong> <%= student.endDate %></div>
-  </div>
+    <div class="row mb-3">
+      <div class="col-md-6"><strong>Name:</strong>
+        <%= student.name %>
+      </div>
+      <div class="col-md-6"><strong>Contact:</strong>
+        <%= student.contact %>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4"><strong>Course:</strong>
+        <%= course.name %>
+      </div>
+      <div class="col-md-4"><strong>Reg No:</strong>
+        <%= student.regNo %>
+      </div>
+      <div class="col-md-4"><strong>Faculty:</strong>
+        <%= student.facultyName ? student.facultyName.name : 'N/A' %>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6"><strong>Start Date:</strong>
+        <%= student.startDate %>
+      </div>
+      <div class="col-md-6"><strong>End Date:</strong>
+        <%= student.endDate %>
+      </div>
+    </div>
 
-  <div class="section-title">Topics Progress</div>
+    <div class="section-title">Topics Progress</div>
 
-  <div class="table-responsive">
-    <table class="table table-bordered">
-      <thead class="table-light">
-        <tr>
-          <th>#</th>
-          <th>✔</th>
-          <th>Topic</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% report.topics.forEach((topic, i) => { %>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="table-light">
           <tr>
-            <td><%= i + 1 %></td>
-            <td>
-              <input type="checkbox" class="form-check-input topic-check"
-                     data-index="<%= i %>" <%= topic.isChecked ? 'checked' : '' %> />
-            </td>
-            <td class="text-start"><%= topic.topicTitle %></td>
-            <td>
-              <input type="text" class="form-control form-control-sm date-field"
-                     id="date-<%= i %>" value="<%= topic.date %>" readonly placeholder="DD / MM / YYYY"/>
-            </td>
+            <th>#</th>
+            <th>✔</th>
+            <th>Topic</th>
+            <th>Date</th>
           </tr>
-        <% }) %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% report.topics.forEach((topic, i)=> { %>
+            <tr>
+              <td>
+                <%= i + 1 %>
+              </td>
+              <td>
+                <input type="checkbox" class="form-check-input topic-check" data-index="<%= i %>" <%=topic.isChecked
+                  ? 'checked' : '' %> />
+              </td>
+              <td class="text-start">
+                <%= topic.topicTitle %>
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm date-field" id="date-<%= i %>"
+                  value="<%= topic.date %>" readonly placeholder="DD / MM / YYYY" />
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
 
-<div class="d-flex justify-content-end mb-3">
-  <button onclick="window.print()" class="btn btn-outline-primary me-2">🖨️ Print</button>
-  <a href="/report/<%= student._id %>/pdf" class="btn btn-outline-success">⬇️ Download PDF</a>
-</div>
+  <div class="d-flex justify-content-end mb-3">
+    <button onclick="window.print()" class="btn btn-outline-primary me-2">🖨️ Print</button>
+    <a href="/report/<%= student._id %>/pdf" class="btn btn-outline-success">⬇️ Download PDF</a>
+  </div>
 
-<script>
-  const reportId = "<%= report._id %>";
+  <script>
+    const reportId = "<%= report._id %>";
 
-  function getCurrentDate() {
-    const d = new Date();
-    return d.toLocaleDateString('en-GB').split('/').map(n => n.padStart(2, '0')).join('/');
-  }
+    function getCurrentDate() {
+      const d = new Date();
+      return d.toLocaleDateString('en-GB').split('/').map(n => n.padStart(2, '0')).join('/');
+    }
 
-  document.querySelectorAll('.topic-check').forEach(cb => {
-    cb.addEventListener('change', async function () {
-      const i = this.dataset.index;
-      const isChecked = this.checked;
-      const date = isChecked ? getCurrentDate() : '';
-      document.getElementById(`date-${i}`).value = date;
+    document.querySelectorAll('.topic-check').forEach(cb => {
+      cb.addEventListener('change', async function () {
+        const i = this.dataset.index;
+        const isChecked = this.checked;
+        const date = isChecked ? getCurrentDate() : '';
+        document.getElementById(`date-${i}`).value = date;
 
-      await fetch('/report/update-topic', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reportId, topicIndex: i, isChecked, date })
+        await fetch('/report/update-topic', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reportId, topicIndex: i, isChecked, date })
+        });
       });
     });
-  });
-</script>
+  </script>
 </body>
+
 </html>

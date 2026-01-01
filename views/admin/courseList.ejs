@@ -76,14 +76,32 @@
 <script>
 async function viewCourseDetails(courseId) {
   try {
-    const response = await fetch(`/admin/course/details/${courseId}`);
+    const response = await fetch(`/admin/course/details/${courseId}`, {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    // If request was redirected (likely due to session timeout), reload page to prompt login
+    if (response.redirected) {
+      window.location.href = response.url;
+      return;
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Failed to fetch course details');
+    }
+
     const course = await response.json();
     
-    if (course.success) {
+    if (course.success && course.data) {
+      const topics = Array.isArray(course.data.topics) ? course.data.topics : [];
       const content = `
         <div class="mb-3">
           <h6 class="fw-bold">${course.data.name}</h6>
-          <p class="text-muted">Total Topics: ${course.data.topics.length}</p>
+          <p class="text-muted">Total Topics: ${topics.length}</p>
         </div>
         
         <div class="table-responsive">
@@ -98,7 +116,7 @@ async function viewCourseDetails(courseId) {
               </tr>
             </thead>
             <tbody>
-              ${course.data.topics.map((topic, index) => `
+              ${topics.map((topic, index) => `
                 <tr>
                   <td>${index + 1}</td>
                   <td>${topic.title}</td>
@@ -108,7 +126,7 @@ async function viewCourseDetails(courseId) {
                       : '<span class="badge bg-primary"><i class="bi bi-shield-check"></i> Admin</span>'
                     }
                   </td>
-                  <td>${new Date(topic.addedAt).toLocaleDateString()}</td>
+                  <td>${topic.addedAt ? new Date(topic.addedAt).toLocaleDateString() : '-'}</td>
                   <td>
                     ${topic.addedBy === 'student' 
                       ? `<button class="btn btn-sm btn-danger" onclick="removeTopic('${courseId}', ${index})">
@@ -130,8 +148,8 @@ async function viewCourseDetails(courseId) {
       alert('Failed to load course details');
     }
   } catch (error) {
-    console.error('Error:', error);
-    alert('Error loading course details');
+    console.error('Error loading course details:', error);
+    alert(error.message || 'Error loading course details');
   }
 }
 

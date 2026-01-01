@@ -65,22 +65,55 @@ router.get('/admin/register', (req, res) => {
 
 // POST: Register
 router.post('/admin/register', async (req, res) => {
-  const { name, email, password , contact } = req.body;
-  const hashed = await bcrypt.hash(password, 10);
-
   try {
-    await Admin.create({ name, email, password: hashed, contact });
+    const { name, email, password, contact } = req.body;
+    
+    // Validation
+    if (!name || !email || !password || !contact) {
+      return res.render('admin/register', {
+        layout: 'admin/layout',
+        activePage: 'staff',
+        error: 'All fields are required'
+      });
+    }
+
+    if (password.length < 6) {
+      return res.render('admin/register', {
+        layout: 'admin/layout',
+        activePage: 'staff',
+        error: 'Password must be at least 6 characters'
+      });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+    const role = req.body.role ? parseInt(req.body.role) : 2;
+    const status = req.body.status || 'Active';
+    await Admin.create({ name, email, password: hashed, contact, role, status });
+    req.flash('success', 'Staff member added successfully!');
     res.redirect('/admin/dashboard');
   } catch (err) {
-    res.send("Email already exists");
+    console.error('Registration error:', err);
+    const errorMsg = err.code === 11000 ? 'Email already exists' : 'Error creating staff member';
+    res.render('admin/register', {
+      layout: 'admin/layout',
+      activePage: 'staff',
+      error: errorMsg
+    });
   }
 });
 
-router.get('/admin/view_staff', async (req, res) => {
-  var staff = await Admin.find();
-  console.log(staff);
-  
-  res.render('admin/view_staff',{ staff , layout: 'admin/layout',activePage: 'view_staff'});
+router.get('/admin/view_staff', isAuthenticated, async (req, res) => {
+  try {
+    const staff = await Admin.find().select('-password');
+    res.render('admin/view_staff', {
+      staff,
+      layout: 'admin/layout',
+      activePage: 'view_staff'
+    });
+  } catch (err) {
+    console.error('Error loading staff:', err);
+    res.status(500).send('Error loading staff list');
+  }
 });
 
 // GET: Login page
@@ -90,20 +123,50 @@ router.get('/admin', (req, res) => {
 
 // POST: Login
 router.post('/admin', async (req, res) => {
-  const { email, password } = req.body;
-  const admin = await Admin.findOne({ email });
-
-  if (admin && await bcrypt.compare(password, admin.password)) {
-
-    if(admin.status=='Active'){
-        req.session.adminId = admin._id;
-        req.session.adminRole = admin.role;
-        res.redirect('/admin/dashboard');
-    }else{
-      res.render('admin/login',{error:"Your Account is block!.",layout: false})
+  try {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.render('admin/login', {
+        error: 'Email and password are required',
+        layout: false
+      });
     }
-  } else {
-    res.render('admin/login',{error:"Email and password are invalide!.",layout: false})
+
+    const admin = await Admin.findOne({ email });
+    
+    if (!admin) {
+      return res.render('admin/login', {
+        error: 'Invalid email or password',
+        layout: false
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    
+    if (!isPasswordValid) {
+      return res.render('admin/login', {
+        error: 'Invalid email or password',
+        layout: false
+      });
+    }
+
+    if (admin.status !== 'Active') {
+      return res.render('admin/login', {
+        error: 'Your account is blocked. Please contact administrator.',
+        layout: false
+      });
+    }
+
+    req.session.adminId = admin._id;
+    req.session.adminRole = admin.role;
+    res.redirect('/admin/dashboard');
+  } catch (err) {
+    console.error('Login error:', err);
+    res.render('admin/login', {
+      error: 'An error occurred during login. Please try again.',
+      layout: false
+    });
   }
 });
 
@@ -113,27 +176,45 @@ router.get('/admin/logout', (req, res) => {
   res.redirect('/admin');
 });
 
-router.get('/admin/student/edit/:id', async (req, res) => {
+router.get('/admin/student/edit/:id', isAuthenticated, async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id).populate('courses').populate('facultyName');
+    
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
 
-  const student = await Student.findById(req.params.id).populate('courses');
-  const courses = await Course.find();
-  const staffList = await Admin.find();
+    const courses = await Course.find();
+    const staffList = await Admin.find().select('name _id');
 
-  res.render('admin/editStudent', {
-    layout: 'admin/layout',
-    student,
-    courses,
-    staffList,
-     activePage: 'students',
-  });
+    res.render('admin/editStudent', {
+      layout: 'admin/layout',
+      student,
+      courses,
+      staffList,
+      activePage: 'students',
+    });
+  } catch (err) {
+    console.error('Error loading edit student page:', err);
+    res.status(500).send('Error loading student edit page');
+  }
 });
 
-router.post('/admin/student/edit/:id', async (req, res) => {
-  const { name, regNo, contact, facultyName, startDate, endDate, password, courses, email, signatureData } = req.body;
-
+router.post('/admin/student/edit/:id', isAuthenticated, async (req, res) => {
   try {
+    const { name, regNo, contact, facultyName, startDate, endDate, password, courses, email, signatureData } = req.body;
+
+    // Validation
+    if (!name || !regNo || !contact || !email || !facultyName) {
+      return res.status(400).send('Required fields are missing');
+    }
+
     // Ensure `courses` is always an array
-    const updatedCourses = Array.isArray(courses) ? courses : [courses];
+    const updatedCourses = Array.isArray(courses) ? courses : (courses ? [courses] : []);
+
+    if (updatedCourses.length === 0) {
+      return res.status(400).send('At least one course must be selected');
+    }
 
     // Prepare update object
     const updateData = {
@@ -143,21 +224,34 @@ router.post('/admin/student/edit/:id', async (req, res) => {
       facultyName,
       startDate,
       endDate,
-      password,
       courses: updatedCourses,
       email
     };
 
-    // ✅ Update signature only if provided
+    // Update password only if provided
+    if (password && password.trim() !== '') {
+      if (password.length < 6) {
+        return res.status(400).send('Password must be at least 6 characters');
+      }
+      updateData.password = password;
+    }
+
+    // Update signature only if provided
     if (signatureData && signatureData.trim() !== '') {
       updateData.signatureData = signatureData;
     }
 
     // 1. Update student
     const student = await Student.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
 
     // 2. Add missing reports for newly added courses
     for (const courseId of updatedCourses) {
+      if (!courseId) continue;
+      
       const existing = await Report.findOne({ student: student._id, course: courseId });
 
       if (!existing) {
@@ -183,7 +277,7 @@ router.post('/admin/student/edit/:id', async (req, res) => {
 
   } catch (err) {
     console.error('Update student error:', err);
-    res.status(500).send('Failed to update student: ' + err);
+    res.status(500).send('Failed to update student: ' + err.message);
   }
 });
 
@@ -298,24 +392,57 @@ router.post('/admin/course/edit/:id', async (req, res) => {
   }
 });
 
-// GET: Register page
-router.get('/admin/edit/:id', async (req, res) => {
-  const admin = await Admin.findById(req.params.id);
-  res.render('admin/editadmin',{ layout: 'admin/layout',activePage: 'staff',admin});
+// GET: Edit admin page
+router.get('/admin/edit/:id', isAuthenticated, async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.params.id).select('-password');
+    
+    if (!admin) {
+      return res.status(404).send('Admin not found');
+    }
+    
+    res.render('admin/editadmin', {
+      layout: 'admin/layout',
+      activePage: 'staff',
+      admin
+    });
+  } catch (err) {
+    console.error('Error loading edit admin page:', err);
+    res.status(500).send('Error loading admin edit page');
+  }
 });
 
-// POST: Register
-router.post('/admin/edit/:id', async (req, res) => {
-
-  const hashed = await bcrypt.hash(req.body.password, 10);
-
-  req.body.password = hashed;
-
+// POST: Update admin
+router.post('/admin/edit/:id', isAuthenticated, async (req, res) => {
   try {
-    await Admin.findByIdAndUpdate(req.params.id,req.body);
+    const { name, email, password, contact, status } = req.body;
+    
+    if (!name || !email || !contact) {
+      return res.status(400).send('Required fields are missing');
+    }
+
+    const updateData = { name, email, contact, status };
+
+    // Only update password if provided
+    if (password && password.trim() !== '') {
+      if (password.length < 6) {
+        return res.status(400).send('Password must be at least 6 characters');
+      }
+      updateData.password = await bcrypt.hash(password, 10);
+    }
+
+    const admin = await Admin.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    
+    if (!admin) {
+      return res.status(404).send('Admin not found');
+    }
+    
+    req.flash('success', 'Staff member updated successfully!');
     res.redirect('/admin/view_staff');
   } catch (err) {
-    res.send("Email already exists");
+    console.error('Update admin error:', err);
+    const errorMsg = err.code === 11000 ? 'Email already exists' : 'Error updating staff member';
+    res.status(500).send(errorMsg);
   }
 });
 

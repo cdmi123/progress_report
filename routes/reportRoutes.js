@@ -59,10 +59,25 @@ router.get('/report/:studentId', async (req, res) => {
 
 // Admin View Progress Report
 router.get('/Admin/report/:studentId', async (req, res) => {
-  const student = await Student.findById(req.params.studentId).populate('course');
-  const report = await Report.findOne({ student: student._id });
+  try {
+    const student = await Student.findById(req.params.studentId).populate('courses').populate('facultyName');
+    
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
 
-  res.render('admin/progressReport', { student, course: student.course, report, layout: 'admin/layout' });
+    const report = await Report.findOne({ student: student._id }).populate('course');
+
+    res.render('admin/progressReport', {
+      student,
+      course: student.courses[0] || null,
+      report,
+      layout: 'admin/layout'
+    });
+  } catch (err) {
+    console.error('Error loading report:', err);
+    res.status(500).send('Error loading report');
+  }
 });
 
 // POST: Update topic progress
@@ -170,29 +185,46 @@ router.post('/report/update-topic', async (req, res) => {
 
 
 router.get('/report/:studentId/pdf', async (req, res) => {
-  const student = await Student.findById(req.params.studentId).populate('course');
-  const report = await Report.findOne({ student: student._id });
+  try {
+    const student = await Student.findById(req.params.studentId).populate('courses');
+    
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
 
-  // Render HTML using EJS
-  const html = await ejs.renderFile(
-    path.join(__dirname, '../views/reportPdfTemplate.ejs'),
-    { student, report, course: student.course }
-  );
+    const report = await Report.findOne({ student: student._id }).populate('course');
 
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.setContent(html, { waitUntil: 'networkidle0' });
+    if (!report) {
+      return res.status(404).send('Report not found');
+    }
 
-  const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+    // Render HTML using EJS
+    const html = await ejs.renderFile(
+      path.join(__dirname, '../views/reportPdfTemplate.ejs'),
+      { student, report, course: student.courses[0] || null }
+    );
 
-  await browser.close();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0' });
 
-  res.set({
-    'Content-Type': 'application/pdf',
-    'Content-Disposition': `attachment; filename="report-${student.name}.pdf"`,
-  });
+    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
 
-  res.send(pdfBuffer);
+    await browser.close();
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="report-${student.name.replace(/\s+/g, '_')}.pdf"`,
+    });
+
+    res.send(pdfBuffer);
+  } catch (err) {
+    console.error('Error generating PDF:', err);
+    res.status(500).send('Error generating PDF: ' + err.message);
+  }
 });
 
 module.exports = router;
